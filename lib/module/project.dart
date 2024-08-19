@@ -1,5 +1,6 @@
 import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/command.dart';
+import 'package:cli_spin/cli_spin.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, Theme, ValidationError;
 import 'package:dart_tabulate/dart_tabulate.dart';
@@ -249,7 +250,7 @@ class CreateProjectController {
           '--ios-language',
           'swift'
         ],
-      ).whenComplete(() {});
+      );
       Directory.current = projectDirectory;
       await runCommand(
         'flutter',
