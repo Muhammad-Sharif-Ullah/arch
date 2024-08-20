@@ -4,7 +4,10 @@ final arch.CreateProjectController createProjectController =
     arch.CreateProjectController();
 final arch.HelpController helpController = arch.HelpController();
 final arch.WelcomeBanner welcomeBanner = arch.WelcomeBanner();
+final arch.FlavorController flavorController = arch.FlavorController();
+
 void main(List<String> arguments) {
+  // return;
   // possible command line arguments
   // 1. arch --help
   // 2. arch --version

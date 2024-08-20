@@ -1,9 +1,9 @@
+import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/command.dart';
-import 'package:cli_spin/cli_spin.dart';
-import 'package:interact/interact.dart'
-    show Input, MultiSelect, Select, Theme, ValidationError;
 import 'package:dart_tabulate/dart_tabulate.dart';
+import 'package:interact/interact.dart'
+    show Input, MultiSelect, Select, ValidationError;
 import 'package:process_run/stdio.dart';
 
 class CreateProjectController {
@@ -20,23 +20,14 @@ class CreateProjectController {
     'Apache License 2.0',
     'MIT License',
     'BSD 2-Clause "Simplified" License',
-    'BSD 3-Clause "New" or "Revised" License',
-    'GNU General Public License (GPL)',
-    'GNU Library or "Lesser" General Public License (LGPL)',
-    'Mozilla Public License 2.0',
-    'Common Development and Distribution License',
-    'Eclipse Public License version 2.0',
-    'Creative Commons Zero v1.0 Universal',
-    'Creative Commons Attribution 4.0 International',
-    'Creative Commons Attribution-ShareAlike 4.0 International',
-    'Creative Commons Attribution NonCommercial 4.0 International',
-    'Creative Commons Attribution NoDerivatives 4.0 International',
-    'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International',
-    'Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International',
     'Generate Custom',
     'Unlicense',
   ];
-  List<String> flavorOptions = ['Development, Production, Staging', 'Custom'];
+  List<String> flavorOptions = [
+    'Development, Production, Staging',
+    'Custom',
+    'No Flavor',
+  ];
 
   List<String> designPatterns = [
     "Clean Architecture",
@@ -82,7 +73,7 @@ class CreateProjectController {
     // Get Author name could be empty
     final String authorName = Input(
       prompt: 'Enter the author name ',
-      defaultValue: 'https//:www.author.com',
+      defaultValue: 'https://www.author.com',
       initialText: '',
       validator: (String x) {
         return true;
@@ -111,8 +102,10 @@ class CreateProjectController {
       ).interact();
       flavors =
           customFlavor.split(',').map((e) => e.trim().toLowerCase()).toList();
-    } else {
+    } else if (selectionOfFlavor == 0) {
       flavors = ['dev', 'prod', 'stag'];
+    } else {
+      flavors = [];
     }
 
     // Get android package name
@@ -216,8 +209,6 @@ class CreateProjectController {
       projectName: projectName,
       projectDescription: projectDescription,
       authorName: authorName,
-      selectionOfFlavor:
-          selectionOfFlavor == 0 ? 'Dev, Production, Staging' : 'Custom',
       customFlavor: flavors,
       designPattern: selectedDesignPattern,
       androidPackageName: androidPackageName,
@@ -228,14 +219,14 @@ class CreateProjectController {
     );
 
     String projectDirectory = '../${projectModel.projectName}';
-    final cmdAddToPubDevChangeAndroidPackage =
-        "pub add --dev change_app_package_name";
-    final String cmdChangeAndroidPackageName =
-        "run change_app_package_name:main ${projectModel.androidPackageName}";
+    // final cmdAddToPubDevChangeAndroidPackage =
+    //     "pub add --dev change_app_package_name";
+    // final String cmdChangeAndroidPackageName =
+    //     "run change_app_package_name:main ${projectModel.androidPackageName}";
     // execute the command
 
     try {
-      runCommand(
+      await runCommand(
         'flutter',
         [
           'create',
@@ -251,19 +242,48 @@ class CreateProjectController {
           'swift'
         ],
       );
+
+      /// Change the directory to the project directory
       Directory.current = projectDirectory;
+
+      /// Add the change_app_package_name package
+      await runCommand(
+          'flutter', ['pub', 'add', '--dev', 'change_app_package_name']);
+      await runCommand("flutter", ["pub", "get"]);
+
+      /// Change the package name
+      await runCommand('dart', [
+        'pub',
+        'run',
+        'change_app_package_name:main',
+        projectModel.androidPackageName
+      ]);
+
+      /// remove the change_app_package_name package
       await runCommand(
         'flutter',
-        cmdAddToPubDevChangeAndroidPackage.split(" "),
-        spinnerRunning: "Adding change_app_package_name to pubspec.yaml...",
-        spinnerDone: "change_app_package_name added to pubspec.yaml",
+        [
+          'pub',
+          'remove',
+          'change_app_package_name',
+        ],
       );
-      await runCommand(
-        'dart',
-        cmdChangeAndroidPackageName.split(" "),
-        spinnerRunning: "Changing Android package name...",
-        spinnerDone: "Android and IOS package name changed successfully",
-      );
+
+      /// Add the dio package
+      await runCommand('flutter', ['pub', 'add', 'dio']);
+
+      ///TODO: generate license file
+
+      /// TODO: generate the project structure
+
+      /// check has any flavors
+      if (flavors.isNotEmpty) {
+        //! TODO: check if host machine has rubbuy installed
+        // final cmdInstallFlavorizr = "gem install flavorizr";
+        await FlavorController().init(project: projectModel);
+      }
+
+      // back to the root directory
       Directory.current = "../";
     } catch (e) {
       print('An error occurred: $e');

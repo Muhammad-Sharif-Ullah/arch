@@ -5,7 +5,6 @@ class ProjectModel {
   final String projectName;
   final String projectDescription;
   final String authorName;
-  final String selectionOfFlavor;
   final List<String> customFlavor;
   final String designPattern;
   final String androidPackageName;
@@ -18,7 +17,6 @@ class ProjectModel {
     required this.projectName,
     required this.projectDescription,
     required this.authorName,
-    required this.selectionOfFlavor,
     required this.customFlavor,
     required this.designPattern,
     required this.androidPackageName,
@@ -30,7 +28,7 @@ class ProjectModel {
 
   @override
   String toString() {
-    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, selectionOfFlavor: $selectionOfFlavor, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient}';
+    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient}';
   }
 
   Map<String, dynamic> toMap() {
@@ -38,7 +36,6 @@ class ProjectModel {
       'projectName': projectName,
       'projectDescription': projectDescription,
       'authorName': authorName,
-      'selectionOfFlavor': selectionOfFlavor,
       'customFlavor': customFlavor,
       'designPattern': designPattern,
       'androidPackageName': androidPackageName,
@@ -54,7 +51,6 @@ class ProjectModel {
       projectName: map['projectName'] as String,
       projectDescription: map['projectDescription'] as String,
       authorName: map['authorName'] as String,
-      selectionOfFlavor: map['selectionOfFlavor'] as String,
       customFlavor: List<String>.from((map['customFlavor'] as List<String>)),
       designPattern: map['designPattern'] as String,
       androidPackageName: map['androidPackageName'] as String,

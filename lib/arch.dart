@@ -3,3 +3,4 @@ export 'utils/read_logo.dart';
 export 'utils/welcome_banner.dart';
 export 'module/project.dart';
 export 'module/help.dart';
+export 'module/flavor.dart';
