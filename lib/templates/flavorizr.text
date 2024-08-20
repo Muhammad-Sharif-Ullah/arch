@@ -3,6 +3,7 @@ flavors:
   {{name}}:
     app:
       name: {{appName}}{{#isNotProd}} {{titleName}}{{/isNotProd}}
+      icon: "assets/images/ic_launcher.png"
     {{#platforms}}
     {{#isAndroid}}
     android:

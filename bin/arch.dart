@@ -18,13 +18,13 @@ void main(List<String> arguments) {
   // 7. arch --create project
   // check arguments
   if (arguments.isEmpty) {
-    // welcomeBanner.call();
+    welcomeBanner.call();
     print('Please provide a command');
     print("In order to use the CLI, you need to provide arguments");
     print("Try 'arch --help' for more information");
   } else {
     final String initialCommand = arguments[0].toLowerCase();
-    // welcomeBanner.call();
+    welcomeBanner.call();
     switch (initialCommand) {
       case "--help":
         helpController.call();

@@ -47,12 +47,17 @@ class FlavorController {
       }).toList(),
     };
     final result = template.renderString(data);
+    /// copy from templates assets file to project directory
+    await runCommand('cp', ['-r', 'lib/templates/assets', projectDirectory]);
+
     Directory.current = projectDirectory;
     // print("CURRENT DIRECTORY ${Directory.current.path}");
 
     // save this to a file called flavorizr.yaml
     await writeContent(
         path: '$projectDirectory/flavorizr.yaml', content: result);
+
+
     await runCommand('flutter', [
       'pub',
       'add',
