@@ -13,7 +13,9 @@ class FlavorController {
     // print("PROJECT DIRECTORY ${project.projectName}");
     String projectDirectory = '../${project.projectName}';
 
-    String appName = camelCase(project.projectName);
+    String appName = camelCase(project.projectName)
+        .replaceAll('-', ' ')
+        .replaceAll('_', ' ');
     String androidPackage = project.androidPackageName;
     String iosBundleId = project.iosPackageName;
     final flavors = project.customFlavor;
@@ -47,6 +49,7 @@ class FlavorController {
       }).toList(),
     };
     final result = template.renderString(data);
+
     /// copy from templates assets file to project directory
     await runCommand('cp', ['-r', 'lib/templates/assets', projectDirectory]);
 
@@ -56,7 +59,6 @@ class FlavorController {
     // save this to a file called flavorizr.yaml
     await writeContent(
         path: '$projectDirectory/flavorizr.yaml', content: result);
-
 
     await runCommand('flutter', [
       'pub',

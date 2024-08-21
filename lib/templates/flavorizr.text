@@ -19,3 +19,4 @@ flavors:
     {{/macos}}
     {{/platforms}}
   {{/flavors}}
+ide: vscode

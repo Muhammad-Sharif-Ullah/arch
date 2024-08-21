@@ -1,5 +1,7 @@
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
+import 'package:arch/module/project_toml.dart';
+import 'package:arch/utils/color_mesage.dart';
 import 'package:arch/utils/command.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
@@ -38,6 +40,8 @@ class CreateProjectController {
   List<String> apiClient = ['dio', 'http', 'chopper', 'retrofit'];
 
   Future<void> call() async {
+    /// print a color message
+
     // Get the project name
     final String projectName = Input(
       prompt: 'Enter the project name (snake case) ',
@@ -225,6 +229,7 @@ class CreateProjectController {
     //     "run change_app_package_name:main ${projectModel.androidPackageName}";
     // execute the command
 
+    printColoredMessage("Creating Flutter project", 'green');
     try {
       await runCommand(
         'flutter',
@@ -245,6 +250,8 @@ class CreateProjectController {
 
       /// Change the directory to the project directory
       Directory.current = projectDirectory;
+
+      printColoredMessage("Changing Package Name", 'green');
 
       /// Add the change_app_package_name package
       await runCommand(
@@ -278,10 +285,15 @@ class CreateProjectController {
 
       /// check has any flavors
       if (flavors.isNotEmpty) {
+        printColoredMessage("Creating Flavors", 'green');
         //! TODO: check if host machine has rubbuy installed
         // final cmdInstallFlavorizr = "gem install flavorizr";
         await FlavorController().init(project: projectModel);
       }
+
+      /// create a project yaml file
+      printColoredMessage("Writing Project Config", 'green');
+      await ProjectToml().writeProjectConfig(project: projectModel);
 
       // back to the root directory
       Directory.current = "../";
