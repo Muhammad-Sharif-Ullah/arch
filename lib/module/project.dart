@@ -40,9 +40,6 @@ class CreateProjectController {
   List<String> apiClient = ['dio', 'http', 'chopper', 'retrofit'];
 
   Future<void> call() async {
-    /// print a color message
-    ///
-
     // Get the project name
     final String projectName = Input(
       prompt: 'Enter the project name (snake case) ',
