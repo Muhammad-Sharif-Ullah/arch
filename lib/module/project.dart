@@ -41,6 +41,7 @@ class CreateProjectController {
 
   Future<void> call() async {
     /// print a color message
+    ///
 
     // Get the project name
     final String projectName = Input(
