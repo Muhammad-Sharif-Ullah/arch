@@ -1,14 +1,12 @@
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
-import 'package:arch/controller/project_yaml.dart';
-import 'package:arch/utils/command.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;
 import 'package:process_run/stdio.dart';
 
 class CreateProjectController {
-  List<String> flavors = ['dev, prod, stag'];
+  List<String> flavors = ['development, production, staging'];
   List<String> platforms = [
     'Android',
     'iOS',

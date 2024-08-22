@@ -31,7 +31,7 @@ Future<void> runCommand(
       throw Exception(
           'Command $command ${arguments.join(' ')} failed with exit code $exitCode');
     }
-    printColoredMessage("\n\n✅ $command ${arguments.join(' ')}\n", 'green');
+    colorMsg("\n\n✅ $command ${arguments.join(' ')}\n", 'green');
   } finally {
     await stdoutController.close();
     await stderrController.close();

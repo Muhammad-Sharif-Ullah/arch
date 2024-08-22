@@ -1,5 +1,3 @@
 class FolderController {
-  void build() {
-    print('Building folder');
-  }
+  void build() {}
 }

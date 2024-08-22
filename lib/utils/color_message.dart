@@ -1,4 +1,4 @@
-void printColoredMessage(String message, String color) {
+void colorMsg(String message, String color) {
   const Map<String, String> colorCodes = {
     'black': '\x1B[30m',
     'red': '\x1B[31m',

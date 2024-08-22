@@ -31,9 +31,10 @@ void main(List<String> arguments) {
   // check arguments
   if (arguments.isEmpty) {
     welcomeBanner.call();
-    print('Please provide a command');
-    print("In order to use the CLI, you need to provide arguments");
-    print("Try 'arch --help' for more information");
+    colorMsg('Please provide a command' '\n', 'red');
+    colorMsg(
+        "In order to use the CLI, you need to provide arguments", 'yellow');
+    colorMsg("Try 'arch --help' for more information", 'yellow');
   } else {
     final String initialCommand = arguments[0].toLowerCase();
     welcomeBanner.call();
@@ -57,8 +58,8 @@ void main(List<String> arguments) {
         buildGenerator.call(arguments);
         break;
       default:
-        print('Invalid argument');
-        print("Try 'arch --help' for more information");
+        colorMsg('Invalid argument' '\n', 'red');
+        colorMsg("Try 'arch --help' for more information" '\n', 'yellow');
     }
   }
 }
