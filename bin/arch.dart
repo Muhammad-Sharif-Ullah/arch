@@ -1,10 +1,20 @@
 import 'package:arch/arch.dart' as arch;
 
+/// Controller
 final arch.CreateProjectController createProjectController =
     arch.CreateProjectController();
 final arch.HelpController helpController = arch.HelpController();
 final arch.WelcomeBanner welcomeBanner = arch.WelcomeBanner();
 final arch.FlavorController flavorController = arch.FlavorController();
+final arch.BuildController buildController = arch.BuildController();
+
+/// Generator
+final arch.CreateGenerator createGenerator = arch.CreateGenerator(
+  createProjectController: createProjectController,
+);
+final arch.BuildGenerator buildGenerator = arch.BuildGenerator(
+  controller: buildController,
+);
 
 void main(List<String> arguments) {
   // return;
@@ -33,21 +43,7 @@ void main(List<String> arguments) {
         print('Version 1.0.0');
         break;
       case "--create":
-        if (arguments.length < 2) {
-          print(
-              'Please provide a subcommand `arc ${arguments[0]} <subcommand>`');
-          print("Try 'arch --help' for more information");
-        } else {
-          final String subCommand = arguments[1].toLowerCase();
-          if (subCommand == 'project') {
-            createProjectController.call();
-          } else if (subCommand == 'module') {
-            print('Create module');
-          } else {
-            print('Invalid argument `${arguments[1]}`');
-            print("Try 'arch --help' for more information");
-          } // end of else
-        }
+        createGenerator.call(arguments);
         break;
       case "--update":
         print('Update');
@@ -55,8 +51,8 @@ void main(List<String> arguments) {
       case "--delete":
         print('Delete');
         break;
-      case "--generate":
-        print('Generate');
+      case "--build":
+        
         break;
       default:
         print('Invalid argument');

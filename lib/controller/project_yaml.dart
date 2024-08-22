@@ -11,7 +11,7 @@ import 'package:yaml/yaml.dart';
 /// take the `ProjectModel` as a parameter and write the content to the `project.toml` file.
 /// in project directory.
 ///
-class ProjectToml {
+class ProjectYaml {
   Future<void> writeProjectConfig({
     required final ProjectModel project,
   }) async {
@@ -30,25 +30,7 @@ class ProjectToml {
     final yamlString = await readContent(path: 'flavorizr.yaml');
 
     // check if the file exists
-    if (yamlString.isEmpty) {
-      // add new data to data object
-      data['flavor'] = {
-        'flavorList': project.customFlavor,
-        'flavorDetails': project.customFlavor.map((flavor) {
-          return {
-            'name': flavor,
-            'platforms': project.platforms.map((platform) {
-              return {
-                'platform': platform,
-                'applicationId': platform == 'android'
-                    ? project.androidPackageName
-                    : project.iosPackageName,
-              };
-            }).toList(),
-          };
-        }).toList(),
-      };
-    } else {
+    if (yamlString.isNotEmpty) {
       // convert yaml content to json
       final Map<String, dynamic> flavors =
           jsonDecode(jsonEncode(loadYaml(yamlString)['flavors']));
@@ -70,7 +52,6 @@ class ProjectToml {
         'flavorList': project.customFlavor,
         'flavorDetails': flavorDetails,
       };
-      // print(data['flavor'].toString());
     }
 
     // Convert data to YAML format

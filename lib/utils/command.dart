@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:arch/utils/color_message.dart';
 import 'package:cli_spinner/cli_spinner.dart';
 
 Future<void> runCommand(
   String command,
-  List<String> arguments, {
-  String spinnerRunning = 'Running...',
-  String spinnerIcon = '✅',
-  String spinnerDone = 'Your process is done',
-}) async {
+  List<String> arguments,
+) async {
   final spinner = Spinner('Running $command ${arguments.join(' ')}...');
   spinner.start();
 
@@ -33,6 +31,7 @@ Future<void> runCommand(
       throw Exception(
           'Command $command ${arguments.join(' ')} failed with exit code $exitCode');
     }
+    printColoredMessage("\n\n✅ $command ${arguments.join(' ')}\n", 'green');
   } finally {
     await stdoutController.close();
     await stderrController.close();

@@ -1,7 +1,6 @@
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
-import 'package:arch/module/project_toml.dart';
-import 'package:arch/utils/color_mesage.dart';
+import 'package:arch/controller/project_yaml.dart';
 import 'package:arch/utils/command.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
@@ -38,6 +37,11 @@ class CreateProjectController {
     "MVVM",
   ];
   List<String> apiClient = ['dio', 'http', 'chopper', 'retrofit'];
+
+  List<String> navigationSelector = [
+    "Flutter Navigator 2.0",
+    "Auto Route",
+  ];
 
   Future<void> call() async {
     // Get the project name
@@ -159,6 +163,14 @@ class CreateProjectController {
     ).interact();
     final String selectedDesignPattern = designPatterns[designPatternIndex];
 
+    // get the navigation
+    final int navigationIndex = Select(
+      prompt: 'Select Navigation',
+      options: navigationSelector,
+      initialIndex: 0,
+    ).interact();
+    final String selectedNavigation = navigationSelector[navigationIndex];
+
     // get the api client
     final int apiClientIndex = Select(
       prompt: 'Select API Client',
@@ -185,6 +197,7 @@ class CreateProjectController {
     table.addRow(['Android Package Name', androidPackageName]);
     table.addRow(['iOS Package Name', iosPackageName]);
     table.addRow(['Platforms', "* ${selectedPlatforms.join('\n* ')}"]);
+    table.addRow(['Navigation', selectedNavigation]);
     table.addRow(['License', selectedLicense]);
     table.addRow(['Design Pattern', selectedDesignPattern]);
     table.addRow(['API Client', selectedApiClient]);
@@ -213,6 +226,7 @@ class CreateProjectController {
       authorName: authorName,
       customFlavor: flavors,
       designPattern: selectedDesignPattern,
+      navigation: selectedNavigation,
       androidPackageName: androidPackageName,
       iosPackageName: iosPackageName,
       platforms: selectedPlatforms,
@@ -227,7 +241,6 @@ class CreateProjectController {
     //     "run change_app_package_name:main ${projectModel.androidPackageName}";
     // execute the command
 
-    printColoredMessage("Creating Flutter project", 'green');
     try {
       await runCommand(
         'flutter',
@@ -248,8 +261,6 @@ class CreateProjectController {
 
       /// Change the directory to the project directory
       Directory.current = projectDirectory;
-
-      printColoredMessage("Changing Package Name", 'green');
 
       /// Add the change_app_package_name package
       await runCommand(
@@ -283,15 +294,13 @@ class CreateProjectController {
 
       /// check has any flavors
       if (flavors.isNotEmpty) {
-        printColoredMessage("Creating Flavors", 'green');
         //! TODO: check if host machine has rubbuy installed
         // final cmdInstallFlavorizr = "gem install flavorizr";
-        await FlavorController().init(project: projectModel);
+        await FlavorController.init(project: projectModel);
       }
 
       /// create a project yaml file
-      printColoredMessage("Writing Project Config", 'green');
-      await ProjectToml().writeProjectConfig(project: projectModel);
+      await ProjectYaml().writeProjectConfig(project: projectModel);
 
       // back to the root directory
       Directory.current = "../";

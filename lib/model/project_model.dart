@@ -12,6 +12,7 @@ class ProjectModel {
   final List<String> platforms;
   final String license;
   final String apiClient;
+  final String navigation;
 
   ProjectModel({
     required this.projectName,
@@ -24,11 +25,12 @@ class ProjectModel {
     required this.platforms,
     required this.license,
     required this.apiClient,
+    required this.navigation,
   });
 
   @override
   String toString() {
-    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient}';
+    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient, navigation: $navigation}';
   }
 
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class ProjectModel {
       'platforms': platforms,
       'license': license,
       'apiClient': apiClient,
+      'navigation': navigation,
     };
   }
 
@@ -58,6 +61,7 @@ class ProjectModel {
       platforms: List<String>.from((map['platforms'] as List<String>)),
       license: map['license'] as String,
       apiClient: map['apiClient'] as String,
+      navigation: map['navigation'] as String,
     );
   }
 

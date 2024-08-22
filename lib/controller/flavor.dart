@@ -7,7 +7,7 @@ import 'package:mustache_template/mustache.dart';
 import 'package:process_run/stdio.dart';
 
 class FlavorController {
-  Future<void> init({
+  static Future<void> init({
     required final ProjectModel project,
   }) async {
     // print("PROJECT DIRECTORY ${project.projectName}");
