@@ -1,8 +1,8 @@
 import 'package:arch/model/project_model.dart';
-import 'package:arch/utils/camel_case.dart';
+import 'package:change_case/change_case.dart';
 import 'package:arch/utils/command.dart';
 import 'package:arch/utils/read_file.dart';
-import 'package:arch/utils/write_content.dart';
+import 'package:arch/utils/write_file.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:process_run/stdio.dart';
 
@@ -13,7 +13,8 @@ class FlavorController {
     // print("PROJECT DIRECTORY ${project.projectName}");
     String projectDirectory = '../${project.projectName}';
 
-    String appName = camelCase(project.projectName)
+    String appName = project.projectName
+        .toCamelCase()
         .replaceAll('-', ' ')
         .replaceAll('_', ' ');
     String androidPackage = project.androidPackageName;
@@ -57,8 +58,7 @@ class FlavorController {
     // print("CURRENT DIRECTORY ${Directory.current.path}");
 
     // save this to a file called flavorizr.yaml
-    await writeContent(
-        path: '$projectDirectory/flavorizr.yaml', content: result);
+    await writeFile(path: '$projectDirectory/flavorizr.yaml', content: result);
 
     await runCommand('flutter', [
       'pub',

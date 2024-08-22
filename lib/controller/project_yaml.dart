@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/read_file.dart';
-import 'package:arch/utils/write_content.dart';
+import 'package:arch/utils/write_file.dart';
 import 'package:json2yaml/json2yaml.dart';
 import 'package:yaml/yaml.dart';
 
@@ -59,6 +59,6 @@ class ProjectYaml {
 
     // save this data as json file in the project directory as project-config.yaml
     final projectConfigYamlPath = "project-config.yaml";
-    await writeContent(path: projectConfigYamlPath, content: yamlData);
+    await writeFile(path: projectConfigYamlPath, content: yamlData);
   }
 }
