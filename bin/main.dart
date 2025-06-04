@@ -37,7 +37,7 @@ void main(List<String> arguments) {
     colorMsg("Try 'arch --help' for more information", 'yellow');
   } else {
     final String initialCommand = arguments[0].toLowerCase();
-    welcomeBanner.call();
+    // welcomeBanner.call();
     switch (initialCommand) {
       case "--help":
         helpController.call();

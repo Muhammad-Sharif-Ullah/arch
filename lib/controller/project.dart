@@ -23,22 +23,18 @@ class CreateProjectController {
     'Unlicense',
   ];
   List<String> flavorOptions = [
-    'Development, Production, Staging',
-    'Custom',
+    // 'Development, Production, Staging',
+    // 'Custom',
     'No Flavor',
   ];
 
-  List<String> designPatterns = [
-    "Clean Architecture",
-    "MVC",
-    "MVP",
-    "MVVM",
-  ];
+  List<String> designPatterns = ["Clean Architecture"];
   List<String> apiClient = ['dio', 'http', 'chopper', 'retrofit'];
 
   List<String> navigationSelector = [
-    "Flutter Navigator 2.0",
-    "Auto Route",
+    // "Flutter Navigator 2.0",
+    // "Auto Route",
+    "Go Router",
   ];
 
   Future<void> call() async {
@@ -76,8 +72,8 @@ class CreateProjectController {
 
     // Get Author name could be empty
     final String authorName = Input(
-      prompt: 'Enter the author name ',
-      defaultValue: 'https://www.author.com',
+      prompt: 'Enter the owner name ',
+      defaultValue: 'https://www.owner.com',
       initialText: '',
       validator: (String x) {
         return true;
@@ -114,8 +110,8 @@ class CreateProjectController {
 
     // Get android package name
     final String androidPackageName = Input(
-      prompt: 'Enter the android package name ',
-      defaultValue: 'com.my_project.app',
+      prompt: 'Enter the android bundle identifier ',
+      defaultValue: 'com.my.project.app',
       initialText: '',
       validator: (String x) {
         if (x.isEmpty) {
@@ -129,7 +125,7 @@ class CreateProjectController {
 
     // Get ios package name
     final String iosPackageName = Input(
-      prompt: 'Enter the ios package name ',
+      prompt: 'Enter the ios bundle Id ',
       defaultValue: androidPackageName,
       initialText: '',
       validator: (String x) {

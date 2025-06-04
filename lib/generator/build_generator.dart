@@ -23,11 +23,11 @@ class BuildGenerator extends BaseGenerator {
     } else {
       final String subCommand = arguments[1].toLowerCase();
       if (subCommand == 'folder') {
-        // folderController.build();
-        logoGeneratorController.generate(
-          iconColor: "FFFFFF",
-          backgroundColor: "32BA58",
-        );
+        folderController.build();
+        // logoGeneratorController.generate(
+        //   iconColor: "FFFFFF",
+        //   backgroundColor: "32BA58",
+        // );
       } else {
         colorMsg('Invalid argument `${arguments[1]}`', 'red');
         colorMsg("Try 'arch --help' for more information", 'yellow');
