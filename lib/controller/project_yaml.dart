@@ -27,32 +27,32 @@ class ProjectYaml {
     };
 
     // find out flavorizr.yaml file in the project directory
-    final yamlString = await readContent(path: 'flavorizr.yaml');
+    // final yamlString = await readContent(path: 'flavorizr.yaml');
 
     // check if the file exists
-    if (yamlString.isNotEmpty) {
-      // convert yaml content to json
-      final Map<String, dynamic> flavors =
-          jsonDecode(jsonEncode(loadYaml(yamlString)['flavors']));
-      List<Map<String, dynamic>> flavorDetails = [];
-      for (MapEntry flavor in flavors.entries) {
-        flavorDetails.add({
-          'name': flavor.key,
-          'platforms': project.platforms.map((platform) {
-            return {
-              'platform': platform,
-              'applicationId': platform == 'android'
-                  ? project.androidPackageName
-                  : project.iosPackageName,
-            };
-          }).toList(),
-        });
-      }
-      data['flavor'] = {
-        'flavorList': project.customFlavor,
-        'flavorDetails': flavorDetails,
-      };
-    }
+    // if (yamlString.isNotEmpty) {
+    //   // convert yaml content to json
+    //   final Map<String, dynamic> flavors =
+    //       jsonDecode(jsonEncode(loadYaml(yamlString)['flavors']));
+    //   List<Map<String, dynamic>> flavorDetails = [];
+    //   for (MapEntry flavor in flavors.entries) {
+    //     flavorDetails.add({
+    //       'name': flavor.key,
+    //       'platforms': project.platforms.map((platform) {
+    //         return {
+    //           'platform': platform,
+    //           'applicationId': platform == 'android'
+    //               ? project.androidPackageName
+    //               : project.iosPackageName,
+    //         };
+    //       }).toList(),
+    //     });
+    //   }
+    //   data['flavor'] = {
+    //     'flavorList': project.customFlavor,
+    //     'flavorDetails': flavorDetails,
+    //   };
+    // }
 
     // Convert data to YAML format
     final yamlData = json2yaml(data);

@@ -18,7 +18,6 @@ dependencies:
   toml: ^0.16.0
   yaml: ^3.1.2
   json2yaml: ^3.0.1
-  cli_spinner: ^1.0.4
   change_case: ^2.1.0
 
 dev_dependencies:

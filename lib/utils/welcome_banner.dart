@@ -1,36 +1,38 @@
 import 'dart:io';
 
-import 'package:arch/utils/get_terminal_dimension.dart';
-
 import 'read_logo.dart';
 
 class WelcomeBanner {
   void call() {
     final String logo = readLogo();
-    final int width = terminalWidth();
+    final int terminalWidth = stdout.terminalColumns;
 
-    // calculate String width of the logo
+    // Split the logo into lines once
+    final List<String> logoLines = logo.split('\n');
+
+    // Calculate the width of the widest line in the logo
     final int logoWidth =
-        logo.split('\n').map((e) => e.length).reduce((a, b) => a > b ? a : b);
+        logoLines.map((line) => line.length).reduce((a, b) => a > b ? a : b);
 
-    // calculate String height of the logo
-    final int logoHeight = logo.split('\n').length;
+    // Calculate the padding for centering the logo
+    final int padding = (terminalWidth - logoWidth) ~/ 2;
 
-    // calculate the padding
-    final int padding = (width - logoWidth) ~/ 2;
-
-    // print the logo with padding
-
-    // stdout.write(logo);
-    for (int i = 0; i < logoHeight; i++) {
-      stdout.write(' ' * padding);
-      stdout.write(logo.split('\n')[i]);
-      stdout.write(' ' * padding);
+    // Print the logo with padding
+    for (final line in logoLines) {
+      stdout.writeln('${' ' * padding}$line');
     }
-    stdout.write('\n');
-    stdout.write("${" " * padding}    Welcome To \n");
-    stdout.write(
-        '${" " * (width - logoWidth - padding - 10)}Flutter Clean Architecture Template Generator\n');
-    stdout.write("${'-' * width}\n");
+
+    // Calculate padding for the welcome message relative to the logo width
+    final int messagePadding = (logoWidth - "Welcome To".length) ~/ 2;
+    stdout.writeln('${' ' * (padding + messagePadding)}Welcome To');
+
+    final int generatorPadding =
+        (logoWidth - "Flutter Clean Architecture Template Generator".length) ~/
+            2;
+    stdout.writeln(
+        '${' ' * (padding + generatorPadding)}Flutter Clean Architecture Template Generator');
+
+    // Print a horizontal separator
+    stdout.writeln('-' * terminalWidth);
   }
 }

@@ -1,40 +1,56 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:arch/utils/color_message.dart';
-import 'package:cli_spinner/cli_spinner.dart';
+import 'package:cli_spin/cli_spin.dart';
 
-Future<void> runCommand(
-  String command,
-  List<String> arguments,
-) async {
-  final spinner = Spinner('Running $command ${arguments.join(' ')}...');
-  spinner.start();
-
-  final stdoutController = StreamController<List<int>>();
-  final stderrController = StreamController<List<int>>();
-
-  stdoutController.stream.listen((data) {
-    stdout.add(data);
-  });
-
-  stderrController.stream.listen((data) {
-    stderr.add(data);
-  });
+Future<void> runCommand(String command, List<String> arguments) async {
+  // Manually apply color to the spinner text
+  final spinnerText =
+      '\x1B[36mRunning $command ${arguments.join(' ')}...\x1B[0m'; // Cyan color
+  final spinner = CliSpin(
+    text: spinnerText,
+    spinner: CliSpinners.earth,
+  ).start();
 
   try {
     final process = await Process.start(command, arguments);
-    process.stdout.pipe(stdoutController);
-    process.stderr.pipe(stderrController);
+
+    // Collect stdout and stderr data
+    final stdoutBuffer = StringBuffer();
+    final stderrBuffer = StringBuffer();
+
+    process.stdout.transform(utf8.decoder).listen((data) {
+      stdoutBuffer.write(data);
+    });
+
+    process.stderr.transform(utf8.decoder).listen((data) {
+      stderrBuffer.write(data);
+    });
+
     final exitCode = await process.exitCode;
+
+    spinner.stop();
+
     if (exitCode != 0) {
       throw Exception(
-          'Command $command ${arguments.join(' ')} failed with exit code $exitCode');
+          '$command ${arguments.join(' ')} failed with exit code $exitCode:\n${stderrBuffer.toString()}');
     }
-    colorMsg("\n\n✅ $command ${arguments.join(' ')}\n", 'green');
-  } finally {
-    await stdoutController.close();
-    await stderrController.close();
+
+    // Display stdout output if available
+    if (stdoutBuffer.isNotEmpty) {
+      colorMsg(
+          stdoutBuffer.toString(), 'reset'); // Change color for stdout output
+    }
+
+    // Always show the success message
+    colorMsg(
+      "\n\n✅ $command ${arguments.join(' ')} executed successfully",
+      'green', // Success message in green
+    );
+  } catch (e) {
     spinner.stop();
+    colorMsg("\n❌ Error executing: $e", 'red'); // Error message in red
   }
 }

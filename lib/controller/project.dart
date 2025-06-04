@@ -280,18 +280,33 @@ class CreateProjectController {
       );
 
       /// Add the dio package
-      await runCommand('flutter', ['pub', 'add', 'dio']);
+      await runCommand('flutter', [
+        'pub',
+        'add',
+        'dio',
+        'flutter_bloc',
+        'get_it',
+        'flutter_screenutil',
+        'cached_network_image',
+        'flutter_animate',
+        'google_fonts',
+        'go_router',
+        'hydrated_bloc',
+        'change_case',
+        'dartz',
+        'equatable',
+      ]);
 
       ///TODO: generate license file
 
       /// TODO: generate the project structure
 
       /// check has any flavors
-      if (flavors.isNotEmpty) {
-        //! TODO: check if host machine has rubbuy installed
-        // final cmdInstallFlavorizr = "gem install flavorizr";
-        await FlavorController.init(project: projectModel);
-      }
+      // if (flavors.isNotEmpty) {
+      //   //! TODO: check if host machine has rubbuy installed
+      //   // final cmdInstallFlavorizr = "gem install flavorizr";
+      //   await FlavorController.init(project: projectModel);
+      // }
 
       /// create a project yaml file
       await ProjectYaml().writeProjectConfig(project: projectModel);

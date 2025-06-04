@@ -29,8 +29,8 @@ void main(List<String> arguments) {
   // 6. arch --generate
   // 7. arch --create project
   // check arguments
+  welcomeBanner.call();
   if (arguments.isEmpty) {
-    welcomeBanner.call();
     colorMsg('Please provide a command' '\n', 'red');
     colorMsg(
         "In order to use the CLI, you need to provide arguments", 'yellow');
