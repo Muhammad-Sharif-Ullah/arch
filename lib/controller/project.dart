@@ -1,5 +1,6 @@
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
+import 'package:arch/utils/replace_icon.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;
@@ -311,6 +312,7 @@ class CreateProjectController {
       /// create a project yaml file
       await ProjectYaml().writeProjectConfig(project: projectModel);
 
+      await AppIconReplace.exe(projectModel.platforms);
       // back to the root directory
       Directory.current = "../";
     } catch (e) {
