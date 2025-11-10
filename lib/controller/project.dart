@@ -1,11 +1,14 @@
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/create_assets.dart';
+import 'package:arch/utils/lib_folder_templating.dart';
+import 'package:arch/utils/localization.dart';
 import 'package:arch/utils/replace_icon.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;
 import 'package:process_run/stdio.dart';
+import 'package:path/path.dart' as p;
 
 class CreateProjectController {
   List<String> flavors = ['development, production, staging'];
@@ -248,10 +251,10 @@ class CreateProjectController {
           '--org',
           projectModel.androidPackageName,
           '--platforms=${projectModel.platforms.join(",")}',
-          '--android-language',
-          'kotlin',
-          '--ios-language',
-          'swift'
+          // '--android-language',
+          // 'kotlin',
+          // '--ios-language',
+          // 'swift'
         ],
       );
 
@@ -288,15 +291,44 @@ class CreateProjectController {
         'dio',
         'flutter_bloc',
         'get_it',
-        'flutter_screenutil',
         'cached_network_image',
+        'in_app_update',
         'flutter_animate',
         'google_fonts',
         'go_router',
         'hydrated_bloc',
         'change_case',
-        'dartz',
+        'intl',
         'equatable',
+        'package_info_plus',
+        'url_launcher',
+        'collection',
+        'json_annotation',
+        'envied',
+        'uuid',
+        'logger',
+        'pretty_dio_logger',
+        'dio_smart_retry',
+        'device_info_plus',
+        'flutter_svg',
+        'path_provider',
+        'flutter_gen',
+        'flutter_launcher_icons'
+      ]);
+
+      /// Add the dev package
+      await runCommand('flutter', [
+        'pub',
+        'add',
+        '-d',
+        'build_runner',
+        'json_serializable',
+        'retrofit_generator',
+        'envied_generator',
+        'go_router_builder',
+        'very_good_analysis',
+        'build_verify',
+        'change_app_package_name',
       ]);
 
       ///TODO: generate license file
@@ -313,12 +345,74 @@ class CreateProjectController {
       /// create a project yaml file
       await ProjectYaml().writeProjectConfig(project: projectModel);
 
-      await AppIconReplace.exe(projectModel.platforms);
+      // await AppIconReplace.exe(projectModel.platforms);
 
       // pwd
 
       /// Add Assets files in the project
       CreateAssets.createAssets(projectDirectory: projectModel.projectName);
+
+      await runCommand('flutter', [
+        'pub',
+        'global',
+        'activate',
+        'flutter_launcher_icons',
+      ]);
+
+      await runCommand('dart', [
+        'run',
+        'flutter_launcher_icons',
+        '-f',
+        'flutter_launcher_icons.yaml',
+      ]);
+
+      final templatesRoot = p.normalize(
+        p.join(Directory.current.parent.path, 'code/arch/lib/templates'),
+      );
+      print("template root - #$templatesRoot");
+
+      final destRoot = p.join(Directory.current.path);
+      print('dest root - 3$destRoot');
+      await LibFolderTemplating.renderTemplatesFolder(
+        templatesRoot: templatesRoot,
+        srcFolder:
+            'lib', // render everything that lives under templatesRoot/lib
+        destRoot: destRoot,
+        globals: {
+          'project_name': projectName,
+          'year': DateTime.now().year,
+        },
+      );
+
+      final String archDirectory =
+          '${Directory.current.parent.path}/code/arch/lib';
+
+      /// other folder copy and paste
+      runCommand(
+        'cp',
+        [
+          Directory('$archDirectory/templates/l10n.yaml')
+              .path, // 👈 Copy contents only
+          '.', // 👈 Ensure assets folder exists
+        ],
+      );
+
+      /// update localization
+      LocalizationUtil.readProjectYAML(projectName);
+
+      await runCommand('dart', [
+        'pub',
+        'global',
+        'activate',
+        'flutter_gen',
+      ]);
+      await runCommand('fluttergen', []);
+      await runCommand('dart', [
+        'run',
+        'build_runner',
+        'build',
+        '--delete-conflicting-outputs',
+      ]);
 
       // back to the root directory
       Directory.current = "../";

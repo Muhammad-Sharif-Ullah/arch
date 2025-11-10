@@ -11,7 +11,10 @@ class CreateGenerator extends BaseGenerator {
   Future<void> call(List<String> arguments) async {
     if (arguments.length < 2) {
       print('Please provide a subcommand `arc ${arguments[0]} <subcommand>`');
-      print("Try 'arch --help' for more information");
+      print("Try 'arch --help' for more information\n");
+      print(
+          "Try with these command \n1. `arch --create porject` to create new project");
+      print('2. `arch --create module` to create new module');
     } else {
       final String subCommand = arguments[1].toLowerCase();
       if (subCommand == 'project') {
@@ -20,7 +23,10 @@ class CreateGenerator extends BaseGenerator {
         print('Create module');
       } else {
         print('Invalid argument `${arguments[1]}`');
-        print("Try 'arch --help' for more information");
+        print("Try 'arch --help' for more information\n");
+        print(
+            "Try with these command \n1. `arch --create porject` to create new project");
+        print('`2. arch --create module` to create new module');
       } // end of else
     }
   }

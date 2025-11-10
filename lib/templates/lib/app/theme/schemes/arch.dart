@@ -1,0 +1,68 @@
+//  lib/schemes/arch_scheme.dart
+import 'package:flutter/material.dart';
+
+abstract final class ArchScheme {
+  // ----------------  LIGHT  ----------------
+  static const ColorScheme light = ColorScheme(
+    brightness: Brightness.light,
+    primary: Color(0xff32BA58),
+    onPrimary: Color(0xFFFFFFFF),
+    primaryContainer: Color(0xffA4F0B8),
+    onPrimaryContainer: Color(0xff002109),
+    secondary: Color(0xff018786),
+    onSecondary: Color(0xFFFFFFFF),
+    secondaryContainer: Color(0xffB4F3F0),
+    onSecondaryContainer: Color(0xff00201C),
+    tertiary: Color(0xff03DAC6),
+    onTertiary: Color(0xFF00312F),
+    tertiaryContainer: Color(0xffC2FFF9),
+    onTertiaryContainer: Color(0xff00312F),
+    error: Color(0xffBA1A1A),
+    onError: Color(0xFFFFFFFF),
+    errorContainer: Color(0xffFFDAD6),
+    onErrorContainer: Color(0xff410002),
+    surface: Color(0xffF5FBF5),
+    onSurface: Color(0xff171D17),
+    onSurfaceVariant: Color(0xff3F4943),
+    outline: Color(0xff6F7973),
+    outlineVariant: Color(0xffBFC9C2),
+    shadow: Color(0xff000000),
+    scrim: Color(0xff000000),
+    inverseSurface: Color(0xff2C322C),
+    onInverseSurface: Color(0xffEDF2E4),
+    inversePrimary: Color(0xff8BDB9A),
+    surfaceTint: Color(0xff32BA58),
+  );
+
+  // ----------------  DARK  ----------------
+  static const ColorScheme dark = ColorScheme(
+    brightness: Brightness.dark,
+    primary: Color(0xff8BDB9A),
+    onPrimary: Color(0xff003918),
+    primaryContainer: Color(0xff005227),
+    onPrimaryContainer: Color(0xffA4F0B8),
+    secondary: Color(0xff4DD9D1),
+    onSecondary: Color(0xff003735),
+    secondaryContainer: Color(0xff00504C),
+    onSecondaryContainer: Color(0xffB4F3F0),
+    tertiary: Color(0xff6EF7E7),
+    onTertiary: Color(0xff003734),
+    tertiaryContainer: Color(0xff004F4A),
+    onTertiaryContainer: Color(0xffC2FFF9),
+    error: Color(0xffFFB4AB),
+    onError: Color(0xff690005),
+    errorContainer: Color(0xff93000A),
+    onErrorContainer: Color(0xffFFB4AB),
+    surface: Color(0xff0F150F),
+    onSurface: Color(0xffD0F5E0),
+    onSurfaceVariant: Color(0xffBFC9C2),
+    outline: Color(0xff89938C),
+    outlineVariant: Color(0xff3F4943),
+    shadow: Color(0xff000000),
+    scrim: Color(0xff000000),
+    inverseSurface: Color(0xffD0F5E0),
+    onInverseSurface: Color(0xff0F150F),
+    inversePrimary: Color(0xff32BA58),
+    surfaceTint: Color(0xff8BDB9A),
+  );
+}

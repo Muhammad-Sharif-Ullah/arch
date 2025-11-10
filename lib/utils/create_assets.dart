@@ -11,8 +11,8 @@ class CreateAssets {
   /// This function is intentionally left empty.
   /// It serves as a placeholder for future asset creation logic.
   static void createAssets({required final String projectDirectory}) {
-    // print(
-    //     "Creating assets in $projectDirectory, ${Directory.current.parent.path}");
+    print(
+        "Creating assets in $projectDirectory, ${Directory.current.parent.path}");
 
     // read file projectDirectroy/pubspec.yaml
     final yamlFile =
@@ -26,28 +26,53 @@ class CreateAssets {
       'assets/images/',
       'assets/icons/',
       'assets/fonts/',
+      'environment/'
     ];
 
     final updatedYaml = json2yaml(jsonToMap);
     File(yamlFile).writeAsStringSync(updatedYaml);
 
-    final String archDirectory = '${Directory.current.parent.path}/arch/lib';
+    final String archDirectory =
+        '${Directory.current.parent.path}/code/arch/lib';
     // copy the template/assets directory to the project directory
     final templateAssetsDirectory =
-        Directory('$archDirectory/templates/assets');
+        Directory('$archDirectory/templates/assets/');
     if (templateAssetsDirectory.existsSync()) {
-      final destinationDirectory = Directory('$projectDirectory/');
       runCommand(
         'cp',
         [
-          '-r',
-          templateAssetsDirectory.path,
-          destinationDirectory.path,
+          '-rv',
+          '${(templateAssetsDirectory.path)}/.', // 👈 Copy contents only
+          './assets', // 👈 Ensure assets folder exists
         ],
       );
     } else {
       print(
           'Template assets directory does not exist at ${templateAssetsDirectory.path}');
     }
+    runCommand(
+      'cp',
+      [
+        Directory('$archDirectory/templates/flutter_launcher_icons.yaml')
+            .path, // 👈 Copy contents only
+        '.', // 👈 Ensure assets folder exists
+      ],
+    );
+    runCommand(
+      'cp',
+      [
+        Directory('$archDirectory/templates/l10n.yaml')
+            .path, // 👈 Copy contents only
+        '.', // 👈 Ensure assets folder exists
+      ],
+    );
+    runCommand(
+      'cp',
+      [
+        '-rv',
+        '${Directory('$archDirectory/templates/environment/').path}/.', // 👈 Copy contents only
+        './environment', // 👈 Ensure assets folder exists
+      ],
+    );
   }
 }
