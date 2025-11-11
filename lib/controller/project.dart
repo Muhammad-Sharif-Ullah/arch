@@ -413,9 +413,18 @@ class CreateProjectController {
         'build',
         '--delete-conflicting-outputs',
       ]);
-
+      await runCommand('rm', [
+        'lib/main.dart',
+      ]);
+      print(
+          "\n\nYour project has been created at  `${Directory.current.absolute}`");
+      await runCommand('cd', [
+        (Directory.current.absolute.path),
+      ]);
+      await runCommand('flutter', ['run', '-t', 'lib/main_development.dart']);
       // back to the root directory
-      Directory.current = "../";
+
+      print("current directory ${Directory.current.absolute}");
     } catch (e) {
       print('An error occurred: $e');
     }
