@@ -25,10 +25,12 @@ class CreateModuleController {
       defaultValue: 'auth',
       validator: (String x) {
         if (x.isEmpty) throw ValidationError('Module name cannot be empty');
-        if (x.contains(' '))
+        if (x.contains(' ')) {
           throw ValidationError('Module name cannot contain spaces');
-        if (x.contains(RegExp(r'[A-Z]')))
+        }
+        if (x.contains(RegExp(r'[A-Z]'))) {
           throw ValidationError('Module name must be snake_case');
+        }
         return true;
       },
     ).interact();
@@ -51,8 +53,9 @@ class CreateModuleController {
         defaultValue: moduleName,
         validator: (String x) {
           if (x.isEmpty) throw ValidationError('Page name cannot be empty');
-          if (x.contains(' '))
+          if (x.contains(' ')) {
             throw ValidationError('Page name cannot contain spaces');
+          }
           return true;
         },
       ).interact();
