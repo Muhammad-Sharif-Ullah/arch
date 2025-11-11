@@ -3,7 +3,6 @@ import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/create_assets.dart';
 import 'package:arch/utils/lib_folder_templating.dart';
 import 'package:arch/utils/localization.dart';
-import 'package:arch/utils/replace_icon.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;

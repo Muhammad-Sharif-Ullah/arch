@@ -1,4 +1,5 @@
 import 'package:arch/arch.dart';
+import 'package:arch/controller/module.dart';
 
 /// Controller
 final CreateProjectController createProjectController =
@@ -8,10 +9,12 @@ final WelcomeBanner welcomeBanner = WelcomeBanner();
 final FlavorController flavorController = FlavorController();
 final BuildController buildController = BuildController();
 final FolderController folderController = FolderController();
+final CreateModuleController createModuleController = CreateModuleController();
 
 /// Generator
 final CreateGenerator createGenerator = CreateGenerator(
   createProjectController: createProjectController,
+  createModuleController: createModuleController,
 );
 final BuildGenerator buildGenerator = BuildGenerator(
   buildController: buildController,
