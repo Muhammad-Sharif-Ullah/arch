@@ -384,6 +384,16 @@ class CreateProjectController {
         },
       );
 
+      await LibFolderTemplating.renderTemplatesFolder(
+        templatesRoot: templatesRoot,
+        srcFolder:
+            '.vscode', // render everything that lives under templatesRoot/lib
+        destRoot: '.',
+        globals: {
+          'project_name': projectName,
+          'year': DateTime.now().year,
+        },
+      );
       final String archDirectory =
           '${Directory.current.parent.path}/code/arch/lib';
 

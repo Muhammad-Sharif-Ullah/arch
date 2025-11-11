@@ -38,7 +38,7 @@ class LibFolderTemplating {
       '.md',
       '.txt',
       '.html',
-      '.htm'
+      '.htm',
     };
 
     await for (final entity

@@ -12,6 +12,7 @@ class AppRouter {
   static GlobalKey<NavigatorState> get rootNavigatorKey => _rootNavigatorKey;
 
   static final GoRouter router = GoRouter(
+    initialLocation: '/',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: $appRoutes,
