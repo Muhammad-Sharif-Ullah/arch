@@ -1,5 +1,6 @@
 import 'package:arch/arch.dart';
 import 'package:arch/controller/model.dart';
+import 'package:arch/controller/model_entity_generator.dart';
 import 'package:arch/controller/module.dart';
 import 'package:arch/controller/state.dart';
 
@@ -14,6 +15,7 @@ final FolderController folderController = FolderController();
 final CreateModuleController createModuleController = CreateModuleController();
 final StateController stateController = StateController();
 final ModelController modelController = ModelController();
+final EntityModelController entityModelController = EntityModelController();
 
 /// Generator
 final CreateGenerator createGenerator = CreateGenerator(
@@ -21,6 +23,7 @@ final CreateGenerator createGenerator = CreateGenerator(
   createModuleController: createModuleController,
   stateController: stateController,
   modelController: modelController,
+  entityModelController: entityModelController,
 );
 final BuildGenerator buildGenerator = BuildGenerator(
   buildController: buildController,
