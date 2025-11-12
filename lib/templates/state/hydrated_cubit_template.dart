@@ -33,11 +33,16 @@ class ${className}HydratedCubit extends HydratedCubit<${className}State> {
 
   @override
   Map<String, dynamic>? toJson(${className}State state) => state.toMap();
+
+
+  void removeCache() {
+    clear();
+  }
 }
 ''';
 
   static String _stateFile(String className, String stateName) => '''
-part of '${stateName}_cubit.dart';
+part of '${stateName}_hydrated_cubit.dart';
 
 class ${className}State  extends Equatable{
   final int counter;
@@ -46,7 +51,7 @@ class ${className}State  extends Equatable{
   Map<String, dynamic> toMap() => {'counter': counter};
 
   factory ${className}State.fromMap(Map<String, dynamic> map) {
-      ${className}State(counter: map['counter'] ?? 0);
+    return  ${className}State(counter: map['counter'] ?? 0);
   }
 
   @override

@@ -8,8 +8,8 @@ class HydratedBlocTemplate {
 
     final files = {
       '${stateName}_hydrated_bloc.dart': _blocFile(className, stateName),
-      '${stateName}_event.dart': _eventFile(className),
-      '${stateName}_state.dart': _stateFile(className),
+      '${stateName}_event.dart': _eventFile(className, stateName),
+      '${stateName}_state.dart': _stateFile(className, stateName),
     };
 
     files.forEach((name, content) {
@@ -19,9 +19,10 @@ class HydratedBlocTemplate {
   }
 
   static String _blocFile(String className, String stateName) => '''
+import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import '${stateName}_event.dart';
-import '${stateName}_state.dart';
+part '${stateName}_event.dart';
+part '${stateName}_state.dart';
 
 class ${className}HydratedBloc extends HydratedBloc<${className}Event, ${className}State> {
   ${className}HydratedBloc() : super(const ${className}State()) {
@@ -39,20 +40,27 @@ class ${className}HydratedBloc extends HydratedBloc<${className}Event, ${classNa
 }
 ''';
 
-  static String _eventFile(String className) => '''
+  static String _eventFile(String className, String stateName) => '''
+part of '${stateName}_hydrated_bloc.dart';
+
 sealed class ${className}Event {}
 
 class ${className}Started extends ${className}Event {}
 ''';
 
-  static String _stateFile(String className) => '''
-class ${className}State {
+  static String _stateFile(String className, String stateName) => '''
+part of '${stateName}_hydrated_bloc.dart';
+class ${className}State  extends Equatable{
   final int counter;
   const ${className}State({this.counter = 0});
 
   Map<String, dynamic> toMap() => {'counter': counter};
-  factory ${className}State.fromMap(Map<String, dynamic> map) =>
-      ${className}State(counter: map['counter'] ?? 0);
+  factory ${className}State.fromMap(Map<String, dynamic> map) {
+    return ${className}State(counter: map['counter'] ?? 0);
+  }
+  
+  @override
+  List<Object?> get props => [counter];
 }
 ''';
 
