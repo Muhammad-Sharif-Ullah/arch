@@ -1,4 +1,5 @@
 import 'package:arch/arch.dart';
+import 'package:arch/controller/model.dart';
 import 'package:arch/controller/module.dart';
 import 'package:arch/controller/state.dart';
 
@@ -12,12 +13,14 @@ final BuildController buildController = BuildController();
 final FolderController folderController = FolderController();
 final CreateModuleController createModuleController = CreateModuleController();
 final StateController stateController = StateController();
+final ModelController modelController = ModelController();
 
 /// Generator
 final CreateGenerator createGenerator = CreateGenerator(
   createProjectController: createProjectController,
   createModuleController: createModuleController,
   stateController: stateController,
+  modelController: modelController,
 );
 final BuildGenerator buildGenerator = BuildGenerator(
   buildController: buildController,

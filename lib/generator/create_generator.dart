@@ -1,3 +1,4 @@
+import 'package:arch/controller/model.dart';
 import 'package:arch/controller/module.dart';
 import 'package:arch/controller/project.dart';
 import 'package:arch/controller/state.dart';
@@ -7,10 +8,12 @@ class CreateGenerator extends BaseGenerator {
   final CreateProjectController createProjectController;
   final CreateModuleController createModuleController;
   final StateController stateController;
+  final ModelController modelController;
   CreateGenerator({
     required this.createProjectController,
     required this.createModuleController,
     required this.stateController,
+    required this.modelController,
   });
 
   @override
@@ -29,6 +32,8 @@ class CreateGenerator extends BaseGenerator {
         createModuleController.call();
       } else if (subCommand == 'state') {
         stateController.call(moduleName: 'home');
+      } else if (subCommand == 'model') {
+        modelController.call(moduleName: 'home');
       } else {
         print('Invalid argument `${arguments[1]}`');
         print("Try 'arch --help' for more information\n");

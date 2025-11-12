@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:arch/arch.dart';
 import 'package:arch/model/project_model.dart';
 import 'package:arch/utils/create_assets.dart';
+import 'package:arch/utils/dart_fix.dart';
 import 'package:arch/utils/lib_folder_templating.dart';
 import 'package:arch/utils/localization.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
@@ -283,6 +284,8 @@ class CreateProjectController {
       print(
           '\n✅ Project successfully created at: ${Directory.current.absolute.path}\n');
       await runCommand('flutter', ['run', '-t', 'lib/main_development.dart']);
+
+      DartFix.fixer();
     } catch (e) {
       print('❌ Error: $e');
     }

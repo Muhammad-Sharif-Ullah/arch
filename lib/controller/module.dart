@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:arch/utils/dart_fix.dart';
 import 'package:arch/utils/module_templating.dart';
 import 'package:change_case/change_case.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
@@ -136,6 +137,7 @@ class CreateModuleController {
         'project_name': projectName,
       },
     );
+    DartFix.fixer();
 
     print('\n✅ Module "$moduleName" generated successfully!\n');
   }
