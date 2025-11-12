@@ -4,8 +4,6 @@ import 'package:arch/utils/command.dart';
 import 'package:arch/utils/dart_fix.dart';
 import 'package:interact/interact.dart' show Input, ValidationError;
 
-/// CLI JSON-to-Model generator for Dart (json_serializable)
-/// Generates models in: lib/feature/<module>/data/model/<modelName>/
 class ModelController {
   Future<void> call({required String moduleName}) async {
     final modelName = Input(
@@ -25,33 +23,49 @@ class ModelController {
       exit(1);
     }
 
-    final jsonData = jsonDecode(await file.readAsString());
-    if (jsonData is! Map<String, dynamic>) {
-      print('❌ Expected a JSON object (Map), not a list');
-      exit(1);
-    }
+    final jsonContent = await file.readAsString();
+    final jsonData = jsonDecode(jsonContent);
 
     final outputDir =
         Directory('lib/feature/$moduleName/data/model/$modelName');
     await outputDir.create(recursive: true);
 
-    // Determine root object
-    final rootKeyNames = jsonData.keys.toList();
-    Map<String, dynamic> rootObject;
     final rootClassBase = _toPascal(modelName);
+    final Map<String, Map<String, FieldInfo>> classes = {};
 
-    if (rootKeyNames.length == 1 &&
-        rootKeyNames[0] == modelName &&
-        jsonData[modelName] is Map<String, dynamic>) {
-      rootObject = Map<String, dynamic>.from(jsonData[modelName] as Map);
+    // --- detect if root is list or map ---
+    if (jsonData is Map<String, dynamic>) {
+      _analyzeMap(jsonData, rootClassBase, classes);
+    } else if (jsonData is List) {
+      // root is a list -> generate a wrapper model class
+      if (jsonData.isEmpty) {
+        print('❌ Empty list at root. Cannot infer structure.');
+        exit(1);
+      }
+
+      final firstItem = jsonData.first;
+      if (firstItem is Map<String, dynamic>) {
+        final itemClass = '${rootClassBase}Item';
+        _analyzeMap(firstItem, itemClass, classes);
+
+        // create wrapper model: holds List<itemClass>
+        final wrapperFields = <String, FieldInfo>{
+          modelName: FieldInfo()
+            ..addType(FieldType.listType)
+            ..listItemTypes.add(FieldType.objectType)
+            ..refClass = itemClass
+        };
+        classes[rootClassBase] = wrapperFields;
+      } else {
+        print('❌ Unsupported JSON root list item type');
+        exit(1);
+      }
     } else {
-      rootObject = Map<String, dynamic>.from(jsonData);
+      print('❌ Unsupported JSON root type');
+      exit(1);
     }
 
-    final Map<String, Map<String, FieldInfo>> classes = {};
-    _analyzeMap(rootObject, rootClassBase, classes);
-
-    // Generate model files
+    // --- Generate model files ---
     for (final entry in classes.entries) {
       final className = '${entry.key}Model';
       final fields = entry.value;
@@ -63,12 +77,12 @@ class ModelController {
     }
 
     print('✅ Models generated under: ${outputDir.path}');
-    print('💡 Run: dart run build_runner build --delete-conflicting-outputs');
-
+    print('💡 Running build_runner...');
     await runCommand('dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
 
-    DartFix.fixer();
+    // auto-format and fix
+    await DartFix.fixer();
   }
 
   // ---------- ANALYSIS ----------
@@ -115,15 +129,15 @@ class ModelController {
               info.listItemNullable = true;
               continue;
             }
-            if (item is int) {
+            if (item is int)
               info.listItemTypes.add(FieldType.intType);
-            } else if (item is double) {
+            else if (item is double)
               info.listItemTypes.add(FieldType.doubleType);
-            } else if (item is bool) {
+            else if (item is bool)
               info.listItemTypes.add(FieldType.boolType);
-            } else if (item is String) {
+            else if (item is String)
               info.listItemTypes.add(FieldType.stringType);
-            } else if (item is Map<String, dynamic>) {
+            else if (item is Map<String, dynamic>) {
               info.listItemTypes.add(FieldType.objectType);
               final nestedName = _deriveNestedClassName(className, key, true);
               info.refClass = nestedName;
@@ -142,7 +156,7 @@ class ModelController {
     return isListItem ? '${base}Item' : base;
   }
 
-  // ---------- RENDERING ----------
+  // ---------- RENDER ----------
 
   String _renderClassFile(
     String baseClassName,
