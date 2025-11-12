@@ -26,8 +26,8 @@ class ModelController {
     final jsonContent = await file.readAsString();
     final jsonData = jsonDecode(jsonContent);
 
-    final outputDir =
-        Directory('lib/feature/$moduleName/data/model/$modelName');
+    // all models go directly into the model folder
+    final outputDir = Directory('lib/feature/$moduleName/data/model');
     await outputDir.create(recursive: true);
 
     final rootClassBase = _toPascal(modelName);
@@ -37,7 +37,6 @@ class ModelController {
     if (jsonData is Map<String, dynamic>) {
       _analyzeMap(jsonData, rootClassBase, classes);
     } else if (jsonData is List) {
-      // root is a list -> generate a wrapper model class
       if (jsonData.isEmpty) {
         print('❌ Empty list at root. Cannot infer structure.');
         exit(1);
@@ -65,9 +64,9 @@ class ModelController {
       exit(1);
     }
 
-    // --- Generate model files ---
+    // --- Generate model files directly in model folder ---
     for (final entry in classes.entries) {
-      final className = '${entry.key}Model';
+      final className = '${_toPascal(entry.key)}Model';
       final fields = entry.value;
       final fileContent =
           _renderClassFile(entry.key, className, fields, classes);
@@ -106,15 +105,15 @@ class ModelController {
         continue;
       }
 
-      if (value is int)
+      if (value is int) {
         info.addType(FieldType.intType);
-      else if (value is double)
+      } else if (value is double) {
         info.addType(FieldType.doubleType);
-      else if (value is bool)
+      } else if (value is bool) {
         info.addType(FieldType.boolType);
-      else if (value is String)
+      } else if (value is String) {
         info.addType(FieldType.stringType);
-      else if (value is Map<String, dynamic>) {
+      } else if (value is Map<String, dynamic>) {
         info.addType(FieldType.objectType);
         final nestedName = _deriveNestedClassName(className, key, false);
         info.refClass = nestedName;
@@ -129,15 +128,15 @@ class ModelController {
               info.listItemNullable = true;
               continue;
             }
-            if (item is int)
+            if (item is int) {
               info.listItemTypes.add(FieldType.intType);
-            else if (item is double)
+            } else if (item is double) {
               info.listItemTypes.add(FieldType.doubleType);
-            else if (item is bool)
+            } else if (item is bool) {
               info.listItemTypes.add(FieldType.boolType);
-            else if (item is String)
+            } else if (item is String) {
               info.listItemTypes.add(FieldType.stringType);
-            else if (item is Map<String, dynamic>) {
+            } else if (item is Map<String, dynamic>) {
               info.listItemTypes.add(FieldType.objectType);
               final nestedName = _deriveNestedClassName(className, key, true);
               info.refClass = nestedName;
@@ -167,6 +166,7 @@ class ModelController {
     final sb = StringBuffer();
     sb.writeln("import 'package:json_annotation/json_annotation.dart';");
 
+    // import other model classes from same folder
     final imports = <String>{};
     for (final f in fields.values) {
       if (f.refClass != null) imports.add(f.refClass!);
@@ -254,8 +254,9 @@ class ModelController {
   bool _snakeValidator(String x) {
     if (x.isEmpty) throw ValidationError('Name cannot be empty');
     if (x.contains(' ')) throw ValidationError('No spaces allowed');
-    if (x.contains(RegExp(r'[A-Z]')))
+    if (x.contains(RegExp(r'[A-Z]'))) {
       throw ValidationError('Must be snake_case');
+    }
     return true;
   }
 
