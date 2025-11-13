@@ -103,38 +103,39 @@ class EntityModelController {
         continue;
       }
 
-      if (value is int)
+      if (value is int) {
         info.addType(FieldType.intType);
-      else if (value is double)
+      } else if (value is double) {
         info.addType(FieldType.doubleType);
-      else if (value is bool)
+      } else if (value is bool) {
         info.addType(FieldType.boolType);
-      else if (value is String)
+      } else if (value is String) {
         info.addType(FieldType.stringType);
-      else if (value is Map<String, dynamic>) {
+      } else if (value is Map<String, dynamic>) {
         info.addType(FieldType.objectType);
         final nested = _deriveNestedClassName(className, key, false);
         info.refClass = nested;
         _analyzeMap(value, nested, classes);
       } else if (value is List) {
         info.addType(FieldType.listType);
-        if (value.isEmpty)
+        if (value.isEmpty) {
           info.listItemTypes.add(FieldType.dynamicType);
-        else {
+        } else {
           for (final item in value) {
             if (item is Map<String, dynamic>) {
               info.listItemTypes.add(FieldType.objectType);
               final nested = _deriveNestedClassName(className, key, true);
               info.refClass = nested;
               _analyzeMap(item, nested, classes);
-            } else if (item is int)
+            } else if (item is int) {
               info.listItemTypes.add(FieldType.intType);
-            else if (item is double)
+            } else if (item is double) {
               info.listItemTypes.add(FieldType.doubleType);
-            else if (item is bool)
+            } else if (item is bool) {
               info.listItemTypes.add(FieldType.boolType);
-            else if (item is String)
+            } else if (item is String) {
               info.listItemTypes.add(FieldType.stringType);
+            }
           }
         }
       }
@@ -189,13 +190,23 @@ class EntityModelController {
         sb.writeln('  @JsonKey(name: \'$originalName\')');
       }
 
-      sb.writeln('  final ${_fieldDartType(info, isEntity: true)} $name;');
+      final dartType = _fieldDartType(info, isEntity: true);
+      final nullableType =
+          info.nullable && !dartType.endsWith('?') ? '$dartType?' : dartType;
+      sb.writeln('  final $nullableType $name;');
     }
 
     // Constructor
     sb.writeln('\n  const $className({');
     for (final e in fields.entries) {
-      sb.writeln('    required this.${_toValidVariable(e.key)},');
+      final name = _toValidVariable(e.key);
+      final info = e.value;
+
+      if (info.nullable) {
+        sb.writeln('    this.$name,'); // optional for nullable
+      } else {
+        sb.writeln('    required this.$name,'); // required for non-nullable
+      }
     }
     sb.writeln('  });\n');
 
@@ -250,7 +261,14 @@ class EntityModelController {
     // Constructor
     sb.writeln('  const $className({');
     for (final e in fields.entries) {
-      sb.writeln('    required super.${_toValidVariable(e.key)},');
+      final name = _toValidVariable(e.key);
+      final info = e.value;
+
+      if (info.nullable) {
+        sb.writeln('    super.$name,'); // optional for nullable
+      } else {
+        sb.writeln('    required super.$name,'); // required for non-nullable
+      }
     }
     sb.writeln('  });');
 
@@ -267,10 +285,17 @@ class EntityModelController {
       final ref = info.refClass!;
       final camel = ref.toCamelCase();
 
-      sb.writeln(
-          '  static ${ref}Model ${camel}FromJson(Map<String, dynamic> json) => ${ref}Model.fromJson(json);');
-      sb.writeln(
-          '  static Map<String, dynamic> ${camel}ToJson(${ref}Entity obj) => (obj as ${ref}Model).toJson();');
+      if (info.nullable) {
+        sb.writeln(
+            '  static ${ref}Model? ${camel}FromJson(Map<String, dynamic>? json) => json == null ? null : ${ref}Model.fromJson(json);');
+        sb.writeln(
+            '  static Map<String, dynamic>? ${camel}ToJson(${ref}Entity? obj) => obj == null ? null : (obj as ${ref}Model).toJson();');
+      } else {
+        sb.writeln(
+            '  static ${ref}Model ${camel}FromJson(Map<String, dynamic> json) => ${ref}Model.fromJson(json);');
+        sb.writeln(
+            '  static Map<String, dynamic> ${camel}ToJson(${ref}Entity obj) => (obj as ${ref}Model).toJson();');
+      }
 
       if (info.isList) {
         sb.writeln(
@@ -304,7 +329,9 @@ class EntityModelController {
     sb.writeln('// ==========================================================');
     sb.writeln();
 
-    for (final imp in imports) sb.writeln(imp);
+    for (final imp in imports) {
+      sb.writeln(imp);
+    }
     sb.writeln();
 
     for (final entry in classes.entries) {
@@ -327,7 +354,11 @@ class EntityModelController {
         final info = f.value;
 
         if (info.isObjectRef && info.refClass != null) {
-          sb.writeln('    $name: $name.toModel(),');
+          if (info.nullable) {
+            sb.writeln('    $name: $name?.toModel(),');
+          } else {
+            sb.writeln('    $name: $name.toModel(),');
+          }
         } else if (info.isList && info.refClass != null) {
           sb.writeln('    $name: $name.map((e) => e.toModel()).toList(),');
         } else {
@@ -343,7 +374,11 @@ class EntityModelController {
         final info = f.value;
 
         if (info.isObjectRef && info.refClass != null) {
-          sb.writeln('    $name: $name.toModel(),');
+          if (info.nullable) {
+            sb.writeln('    $name: $name?.toModel(),');
+          } else {
+            sb.writeln('    $name: $name.toModel(),');
+          }
         } else if (info.isList && info.refClass != null) {
           sb.writeln('    $name: $name.map((e) => e.toModel()).toList(),');
         } else {
