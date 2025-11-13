@@ -4,11 +4,18 @@ import 'package:arch/utils/command.dart';
 import 'package:arch/utils/dart_fix.dart';
 import 'package:change_case/change_case.dart';
 import 'package:interact/interact.dart' show Input, ValidationError;
+import 'package:path/path.dart' as p;
 
 /// CLI Generator: Converts JSON → Entity + Model files + Extensions
 /// Supports nested objects, lists, and json_serializable mappings
 class EntityModelController {
   Future<void> call({required String moduleName}) async {
+    final featurePath = p.join('lib', 'feature', moduleName);
+    if (!Directory(featurePath).existsSync()) {
+      print('⚠️  Module "$moduleName" not found under lib/feature/');
+      return;
+    }
+
     // Ask user for base name and JSON file path
     final baseName = Input(
       prompt: 'Enter the base name for Entity/Model (snake_case): ',

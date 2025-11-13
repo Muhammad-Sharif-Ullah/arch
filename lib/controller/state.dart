@@ -17,6 +17,12 @@ class StateController {
   ];
 
   Future<void> call({required String moduleName}) async {
+    final featurePath = p.join('lib', 'feature', moduleName);
+    if (!Directory(featurePath).existsSync()) {
+      print('⚠️  Module "$moduleName" not found under lib/feature/');
+      return;
+    }
+
     final int stateManagementIndex = Select(
       prompt: 'Select State Management:',
       options: _stateManagementOptions,
@@ -56,12 +62,6 @@ class StateController {
     final String? projectName = yamlMap['name'];
     if (projectName == null) {
       print('⚠️  Could not determine project name from pubspec.yaml');
-      return;
-    }
-
-    final featurePath = p.join('lib', 'feature', moduleName);
-    if (!Directory(featurePath).existsSync()) {
-      print('⚠️  Module "$moduleName" not found under lib/feature/');
       return;
     }
 
