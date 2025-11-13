@@ -16,7 +16,6 @@ class EntityModelController {
       return;
     }
 
-    // Ask user for base name and JSON file path
     final baseName = Input(
       prompt: 'Enter the base name for Entity/Model (snake_case): ',
       validator: _snakeValidator,
@@ -27,7 +26,6 @@ class EntityModelController {
       validator: _pathValidator,
     ).interact();
 
-    // Load and parse the JSON
     final file = File(jsonFilePath);
     if (!await file.exists()) {
       print('❌ File not found: $jsonFilePath');
@@ -83,18 +81,16 @@ class EntityModelController {
 
     print('✅ Generated Entities, Models, and Extensions successfully');
 
-    // ---------- FORMAT + FIX + BUILD ----------
     await runCommand('dart', ['format', '.']);
     await DartFix.fixer();
     await runCommand('dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
   }
 
-  // ---------------- ANALYZE JSON STRUCTURE ----------------
+  // ---------------- ANALYZE JSON ----------------
   void _analyzeMap(Map<String, dynamic> map, String className,
       Map<String, Map<String, FieldInfo>> classes) {
     final fields = classes.putIfAbsent(className, () => {});
-
     for (final entry in map.entries) {
       final key = entry.key;
       final value = entry.value;
@@ -107,39 +103,38 @@ class EntityModelController {
         continue;
       }
 
-      if (value is int) {
+      if (value is int)
         info.addType(FieldType.intType);
-      } else if (value is double) {
+      else if (value is double)
         info.addType(FieldType.doubleType);
-      } else if (value is bool) {
+      else if (value is bool)
         info.addType(FieldType.boolType);
-      } else if (value is String) {
+      else if (value is String)
         info.addType(FieldType.stringType);
-      } else if (value is Map<String, dynamic>) {
+      else if (value is Map<String, dynamic>) {
         info.addType(FieldType.objectType);
         final nested = _deriveNestedClassName(className, key, false);
         info.refClass = nested;
         _analyzeMap(value, nested, classes);
       } else if (value is List) {
         info.addType(FieldType.listType);
-        if (value.isEmpty) {
+        if (value.isEmpty)
           info.listItemTypes.add(FieldType.dynamicType);
-        } else {
+        else {
           for (final item in value) {
             if (item is Map<String, dynamic>) {
               info.listItemTypes.add(FieldType.objectType);
               final nested = _deriveNestedClassName(className, key, true);
               info.refClass = nested;
               _analyzeMap(item, nested, classes);
-            } else if (item is int) {
+            } else if (item is int)
               info.listItemTypes.add(FieldType.intType);
-            } else if (item is double) {
+            else if (item is double)
               info.listItemTypes.add(FieldType.doubleType);
-            } else if (item is bool) {
+            else if (item is bool)
               info.listItemTypes.add(FieldType.boolType);
-            } else if (item is String) {
+            else if (item is String)
               info.listItemTypes.add(FieldType.stringType);
-            }
           }
         }
       }
@@ -147,7 +142,6 @@ class EntityModelController {
   }
 
   // ---------------- ENTITY RENDER ----------------
-
   String _renderEntityFile(
     String baseClassName,
     String className,
@@ -157,7 +151,6 @@ class EntityModelController {
   ) {
     final sb = StringBuffer();
 
-    // ===== Imports =====
     sb.writeln("import 'package:equatable/equatable.dart';");
     sb.writeln("import 'package:json_annotation/json_annotation.dart';");
     sb.writeln(
@@ -170,16 +163,16 @@ class EntityModelController {
       }
     }
 
-    // ===== Class Header =====
     sb.writeln('\n/// Domain layer entity for $baseClassName');
     sb.writeln(
         '/// Represents the pure business object, free of serialization logic.');
     sb.writeln('class $className extends Equatable {');
 
-    // ===== Fields =====
+    // Fields
     for (final e in fields.entries) {
-      final name = e.key;
+      final originalName = e.key;
       final info = e.value;
+      final name = _toValidVariable(originalName);
 
       if (info.refClass != null) {
         final prefix = '${baseClassName}Model';
@@ -187,43 +180,41 @@ class EntityModelController {
 
         if (info.isList) {
           sb.writeln(
-              '  /// Converts list of ${info.refClass!} JSON to entity objects and back.');
-          sb.writeln(
-              '  @JsonKey(fromJson: $prefix.listOf${_toPascal(info.refClass!)}FromJson, toJson: $prefix.listOf${_toPascal(info.refClass!)}ToJson,  defaultValue: [],)');
+              '  @JsonKey(fromJson: $prefix.listOf${_toPascal(info.refClass!)}FromJson, toJson: $prefix.listOf${_toPascal(info.refClass!)}ToJson, name: \'$originalName\', defaultValue: [])');
         } else {
           sb.writeln(
-              '  /// Converts nested ${info.refClass!} JSON to entity object and back.');
-          sb.writeln(
-              '  @JsonKey(fromJson: $prefix.${func.toCamelCase()}FromJson, toJson: $prefix.${func.toCamelCase()}ToJson)');
+              '  @JsonKey(fromJson: $prefix.${func}FromJson, toJson: $prefix.${func}ToJson, name: \'$originalName\')');
         }
+      } else {
+        sb.writeln('  @JsonKey(name: \'$originalName\')');
       }
 
       sb.writeln('  final ${_fieldDartType(info, isEntity: true)} $name;');
     }
 
-    // ===== Constructor =====
-    sb.writeln('\n  /// Creates an immutable [$className] instance.');
-    sb.writeln('  const $className({');
+    // Constructor
+    sb.writeln('\n  const $className({');
     for (final e in fields.entries) {
-      sb.writeln('    required this.${e.key},');
+      sb.writeln('    required this.${_toValidVariable(e.key)},');
     }
     sb.writeln('  });\n');
 
-    // ===== CopyWith =====
-    sb.writeln('  /// Returns a new [$className] with modified fields.');
+    // CopyWith
     sb.writeln('  $className copyWith({');
     for (final e in fields.entries) {
-      sb.writeln('    ${_fieldDartType(e.value, isEntity: true)}? ${e.key},');
+      sb.writeln(
+          '    ${_fieldDartType(e.value, isEntity: true)}? ${_toValidVariable(e.key)},');
     }
     sb.writeln('  }) => $className(');
     for (final e in fields.entries) {
-      sb.writeln('    ${e.key}: ${e.key} ?? this.${e.key},');
+      final name = _toValidVariable(e.key);
+      sb.writeln('    $name: $name ?? this.$name,');
     }
     sb.writeln('  );\n');
 
-    // ===== Equatable Override =====
     sb.writeln('  @override');
-    sb.writeln('  List<Object?> get props => [${fields.keys.join(', ')}];');
+    sb.writeln(
+        '  List<Object?> get props => [${fields.keys.map(_toValidVariable).join(', ')}];');
 
     sb.writeln('}');
     return sb.toString();
@@ -238,8 +229,6 @@ class EntityModelController {
     String moduleName,
   ) {
     final sb = StringBuffer();
-
-    // ===== Imports =====
     sb.writeln("import 'package:json_annotation/json_annotation.dart';");
     sb.writeln(
         "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(baseClassName)}_entity.dart';");
@@ -254,48 +243,36 @@ class EntityModelController {
       }
     }
 
-    // ===== File Header =====
     sb.writeln("\npart '${_toSnake(baseClassName)}_model.g.dart';\n");
-    sb.writeln('''
-/// Data layer model for [$baseClassName]Entity.
-/// Handles JSON serialization & conversion between Entity ↔ Model.
-/// This file is auto-generated — manual edits may be overwritten.
-@JsonSerializable(explicitToJson: true)
-class $className extends ${baseClassName}Entity {
-''');
+    sb.writeln('@JsonSerializable(explicitToJson: true)');
+    sb.writeln('class $className extends ${baseClassName}Entity {');
 
-    // ===== Constructor =====
-    sb.writeln('  /// Creates [$className] mapped from entity fields.');
+    // Constructor
     sb.writeln('  const $className({');
     for (final e in fields.entries) {
-      sb.writeln(
-          '    required ${_fieldDartType(e.value, isEntity: false)} super.${e.key},');
+      sb.writeln('    required super.${_toValidVariable(e.key)},');
     }
-    sb.writeln('  });\n');
+    sb.writeln('  });');
 
-    // ===== JSON Methods =====
-    sb.writeln('  /// Deserialize JSON → [$className]');
+    // JSON Methods
     sb.writeln(
         '  factory $className.fromJson(Map<String, dynamic> json) => _\$${className}FromJson(json);');
-    sb.writeln('  /// Serialize [$className] → JSON');
     sb.writeln(
         '  Map<String, dynamic> toJson() => _\$${className}ToJson(this);\n');
 
-    // ===== Helper Methods =====
+    // Helper Methods for nested objects
     for (final e in fields.entries) {
       final info = e.value;
       if (info.refClass == null) continue;
       final ref = info.refClass!;
-      final camel = ref.toCamelCase(); // 👈 this ensures lowerCamelCase naming
+      final camel = ref.toCamelCase();
 
-      sb.writeln('  /// JSON helper for [$ref]Model conversions.');
       sb.writeln(
           '  static ${ref}Model ${camel}FromJson(Map<String, dynamic> json) => ${ref}Model.fromJson(json);');
       sb.writeln(
           '  static Map<String, dynamic> ${camel}ToJson(${ref}Entity obj) => (obj as ${ref}Model).toJson();');
 
       if (info.isList) {
-        sb.writeln('  /// JSON helper for list of [$ref]Model conversions.');
         sb.writeln(
             '  static List<${ref}Model> listOf${ref}FromJson(List<dynamic> list) => list.map((e) => ${ref}Model.fromJson(e as Map<String, dynamic>)).toList();');
         sb.writeln(
@@ -309,13 +286,10 @@ class $className extends ${baseClassName}Entity {
 
   // ---------------- EXTENSIONS ----------------
   String _renderExtensions(
-    Map<String, Map<String, FieldInfo>> classes,
-    String moduleName,
-  ) {
+      Map<String, Map<String, FieldInfo>> classes, String moduleName) {
     final sb = StringBuffer();
-
-    // collect imports (deduplicated)
     final imports = <String>{};
+
     for (final entry in classes.entries) {
       final base = entry.key;
       imports.add(
@@ -324,22 +298,15 @@ class $className extends ${baseClassName}Entity {
           "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(base)}_entity.dart';");
     }
 
-    // Header
     sb.writeln('// ==========================================================');
     sb.writeln(
         '// Auto-generated model <-> entity extensions for module: $moduleName');
-    sb.writeln('// Generated by EntityModelController');
     sb.writeln('// ==========================================================');
     sb.writeln();
 
-    // Write imports at top
-    final sortedImports = imports.toList()..sort();
-    for (final imp in sortedImports) {
-      sb.writeln(imp);
-    }
+    for (final imp in imports) sb.writeln(imp);
     sb.writeln();
 
-    // For each class, produce Model->Entity and Entity->Model extensions
     for (final entry in classes.entries) {
       final base = entry.key;
       final fields = entry.value;
@@ -351,64 +318,41 @@ class $className extends ${baseClassName}Entity {
           '// ----------------------------------------------------------');
       sb.writeln('// Converters for $base');
       sb.writeln(
-          '// ----------------------------------------------------------');
-      sb.writeln();
-      // Model -> Entity
-      sb.writeln('/// Convert $modelClass to $entityClass (data -> domain).');
-      sb.writeln(
-          '/// Use this when mapping API/persistence models into domain entities.');
+          '// ----------------------------------------------------------\n');
+
       sb.writeln('extension ${base}ModelExt on $modelClass {');
       sb.writeln('  $entityClass toEntity() => $entityClass(');
-
       for (final f in fields.entries) {
-        final name = f.key;
+        final name = _toValidVariable(f.key);
         final info = f.value;
 
         if (info.isObjectRef && info.refClass != null) {
-          // single nested object (Model -> Entity)
           sb.writeln('    $name: $name.toModel(),');
         } else if (info.isList && info.refClass != null) {
-          // list of nested objects (Model -> Entity)
           sb.writeln('    $name: $name.map((e) => e.toModel()).toList(),');
         } else {
-          // primitive or list of primitives or dynamic
           sb.writeln('    $name: $name,');
         }
       }
+      sb.writeln('  );\n}\n');
 
-      sb.writeln('  );');
-      sb.writeln('}');
-      sb.writeln();
-
-      // Entity -> Model
-      sb.writeln('/// Convert $entityClass to $modelClass (domain -> data).');
-      sb.writeln(
-          '/// Use this when sending domain entities to data layer or serializing.');
       sb.writeln('extension ${base}EntityExt on $entityClass {');
       sb.writeln('  $modelClass toModel() => $modelClass(');
-
       for (final f in fields.entries) {
-        final name = f.key;
+        final name = _toValidVariable(f.key);
         final info = f.value;
 
         if (info.isObjectRef && info.refClass != null) {
-          // single nested object (Entity -> Model)
           sb.writeln('    $name: $name.toModel(),');
         } else if (info.isList && info.refClass != null) {
-          // list of nested objects (Entity -> Model)
           sb.writeln('    $name: $name.map((e) => e.toModel()).toList(),');
         } else {
-          // primitive or list of primitives or dynamic
           sb.writeln('    $name: $name,');
         }
       }
-
-      sb.writeln('  );');
-      sb.writeln('}');
-      sb.writeln();
+      sb.writeln('  );\n}\n');
     }
 
-    // final note comment
     sb.writeln('// End of auto-generated extensions');
     return sb.toString();
   }
@@ -418,8 +362,7 @@ class $className extends ${baseClassName}Entity {
     if (info.isList) {
       if (info.listItemTypes.contains(FieldType.objectType) &&
           info.refClass != null) {
-        final type = info.refClass! + (isEntity ? 'Entity' : 'Model');
-        return 'List<$type>';
+        return 'List<${info.refClass! + (isEntity ? "Entity" : "Model")}>';
       }
       return 'List<${_coalescePrimitive(info.listItemTypes.toSet())}>';
     }
@@ -446,9 +389,24 @@ class $className extends ${baseClassName}Entity {
   String _toPascal(String name) =>
       name.split('_').map((w) => w[0].toUpperCase() + w.substring(1)).join();
   String _toCamel(String name) {
-    final parts = name.split('_');
-    return parts.first +
-        parts.skip(1).map((w) => w[0].toUpperCase() + w.substring(1)).join();
+    if (name.contains('_')) {
+      // snake_case → camelCase
+      final parts = name.split('_');
+      return parts.first.toLowerCase() +
+          parts.skip(1).map((w) => w[0].toUpperCase() + w.substring(1)).join();
+    } else {
+      // PascalCase or single word → camelCase
+      return name[0].toLowerCase() + name.substring(1);
+    }
+  }
+
+  String _toValidVariable(String name) {
+    String n = name.replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_');
+    if (RegExp(r'^[0-9]').hasMatch(n)) n = 'v$n';
+    if (n.startsWith('_')) n = 'v${n.replaceAll(RegExp(r'^_+'), '')}';
+
+    // Handle special case for custom_webhooks → customWebHooks
+    return _toCamel(n);
   }
 
   bool _snakeValidator(String x) {
