@@ -253,7 +253,7 @@ class CreateProjectController {
 
       // --- Render Templates ---
       final templatesRoot = p.normalize(
-          p.join(Directory.current.parent.path, 'code/arch/lib/templates'));
+          p.join(Directory.current.parent.path, 'arch/lib/templates'));
       final destRoot = p.join(Directory.current.path);
 
       await LibFolderTemplating.renderTemplatesFolder(

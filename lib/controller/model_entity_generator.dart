@@ -5,14 +5,30 @@ import 'package:arch/utils/dart_fix.dart';
 import 'package:change_case/change_case.dart';
 import 'package:interact/interact.dart' show Input, ValidationError;
 import 'package:path/path.dart' as p;
+import 'package:yaml/yaml.dart';
 
 /// CLI Generator: Converts JSON → Entity + Model files + Extensions
 /// Supports nested objects, lists, and json_serializable mappings
 class EntityModelController {
   Future<void> call({required String moduleName}) async {
-    final featurePath = p.join('lib', 'feature', moduleName);
-    if (!Directory(featurePath).existsSync()) {
-      print('⚠️  Module "$moduleName" not found under lib/feature/');
+    // ────────────────────────────────
+    // 3️⃣ Validate project directory
+    // ────────────────────────────────
+    final pubspecFile = File('pubspec.yaml');
+    if (!pubspecFile.existsSync()) {
+      print('\n❌ pubspec.yaml not found in your project directory.');
+      print(
+          '👉 Please run this command inside a valid Flutter/Dart project.\n');
+      return;
+    }
+
+    final yamlString = await pubspecFile.readAsString();
+    final doc = loadYaml(yamlString);
+    final projectName = doc['name']?.toString() ?? 'unknown_project';
+
+    final featuresPath = p.join('lib', 'features', moduleName);
+    if (!Directory(featuresPath).existsSync()) {
+      print('⚠️  Module "$moduleName" not found under lib/features/');
       return;
     }
 
@@ -53,23 +69,23 @@ class EntityModelController {
     _analyzeMap(rootObject, rootClass, classes);
 
     // ---------- GENERATE ENTITY FILES ----------
-    final entityDir = Directory('lib/feature/$moduleName/domain/entities');
+    final entityDir = Directory('lib/features/$moduleName/domain/entities');
     await entityDir.create(recursive: true);
 
     for (final entry in classes.entries) {
-      final content = _renderEntityFile(
-          entry.key, '${entry.key}Entity', entry.value, classes, moduleName);
+      final content = _renderEntityFile(entry.key, '${entry.key}Entity',
+          entry.value, classes, moduleName, projectName);
       await File('${entityDir.path}/${_toSnake(entry.key)}_entity.dart')
           .writeAsString(content);
     }
 
     // ---------- GENERATE MODEL FILES ----------
-    final modelDir = Directory('lib/feature/$moduleName/data/model');
+    final modelDir = Directory('lib/features/$moduleName/data/model');
     await modelDir.create(recursive: true);
 
     for (final entry in classes.entries) {
-      final content = _renderModelFile(
-          entry.key, '${entry.key}Model', entry.value, classes, moduleName);
+      final content = _renderModelFile(entry.key, '${entry.key}Model',
+          entry.value, classes, moduleName, projectName);
       await File('${modelDir.path}/${_toSnake(entry.key)}_model.dart')
           .writeAsString(content);
     }
@@ -77,7 +93,8 @@ class EntityModelController {
     // ---------- GENERATE EXTENSIONS ----------
     final extFile = File('lib/core/extensions/${moduleName}_ext.dart');
     await extFile.create(recursive: true);
-    await extFile.writeAsString(_renderExtensions(classes, moduleName));
+    await extFile
+        .writeAsString(_renderExtensions(classes, moduleName, projectName));
 
     print('✅ Generated Entities, Models, and Extensions successfully');
 
@@ -149,18 +166,19 @@ class EntityModelController {
     Map<String, FieldInfo> fields,
     Map<String, Map<String, FieldInfo>> classes,
     String moduleName,
+    String projectName,
   ) {
     final sb = StringBuffer();
 
     sb.writeln("import 'package:equatable/equatable.dart';");
     sb.writeln("import 'package:json_annotation/json_annotation.dart';");
     sb.writeln(
-        "import 'package:my_project/feature/$moduleName/data/model/${_toSnake(baseClassName)}_model.dart';");
+        "import 'package:$projectName/features/$moduleName/data/model/${_toSnake(baseClassName)}_model.dart';");
 
     for (final f in fields.values) {
       if (f.refClass != null) {
         sb.writeln(
-            "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(f.refClass!)}_entity.dart';");
+            "import 'package:$projectName/features/$moduleName/domain/entities/${_toSnake(f.refClass!)}_entity.dart';");
       }
     }
 
@@ -238,19 +256,20 @@ class EntityModelController {
     Map<String, FieldInfo> fields,
     Map<String, Map<String, FieldInfo>> classes,
     String moduleName,
+    String projectName,
   ) {
     final sb = StringBuffer();
     sb.writeln("import 'package:json_annotation/json_annotation.dart';");
     sb.writeln(
-        "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(baseClassName)}_entity.dart';");
+        "import 'package:$projectName/features/$moduleName/domain/entities/${_toSnake(baseClassName)}_entity.dart';");
     sb.writeln(
-        "import 'package:my_project/core/extensions/${moduleName}_ext.dart';");
+        "import 'package:$projectName/core/extensions/${moduleName}_ext.dart';");
 
     for (final f in fields.values) {
       if (f.refClass != null) {
         sb.writeln("import '${_toSnake(f.refClass!)}_model.dart';");
         sb.writeln(
-            "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(f.refClass!)}_entity.dart';");
+            "import 'package:$projectName/features/$moduleName/domain/entities/${_toSnake(f.refClass!)}_entity.dart';");
       }
     }
 
@@ -310,17 +329,17 @@ class EntityModelController {
   }
 
   // ---------------- EXTENSIONS ----------------
-  String _renderExtensions(
-      Map<String, Map<String, FieldInfo>> classes, String moduleName) {
+  String _renderExtensions(Map<String, Map<String, FieldInfo>> classes,
+      String moduleName, String projectName) {
     final sb = StringBuffer();
     final imports = <String>{};
 
     for (final entry in classes.entries) {
       final base = entry.key;
       imports.add(
-          "import 'package:my_project/feature/$moduleName/data/model/${_toSnake(base)}_model.dart';");
+          "import 'package:$projectName/features/$moduleName/data/model/${_toSnake(base)}_model.dart';");
       imports.add(
-          "import 'package:my_project/feature/$moduleName/domain/entities/${_toSnake(base)}_entity.dart';");
+          "import 'package:$projectName/features/$moduleName/domain/entities/${_toSnake(base)}_entity.dart';");
     }
 
     sb.writeln('// ==========================================================');
