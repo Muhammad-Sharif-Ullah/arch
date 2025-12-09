@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:arch/utils/command.dart';
+import 'package:arch_cli/utils/command.dart';
 
 class AppIconReplace {
   AppIconReplace._();

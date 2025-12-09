@@ -1,8 +1,8 @@
-import 'package:arch/model/project_model.dart';
+import 'package:arch_cli/model/project_model.dart';
+import 'package:arch_cli/utils/command.dart';
+import 'package:arch_cli/utils/read_file.dart';
+import 'package:arch_cli/utils/write_file.dart';
 import 'package:change_case/change_case.dart';
-import 'package:arch/utils/command.dart';
-import 'package:arch/utils/read_file.dart';
-import 'package:arch/utils/write_file.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:process_run/stdio.dart';
 

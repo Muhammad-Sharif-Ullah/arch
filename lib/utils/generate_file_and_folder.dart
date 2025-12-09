@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:arch/arch.dart';
+import 'package:arch_cli/arch.dart';
 
 Future<void> generateFileAndFolder({
   required String filePath,

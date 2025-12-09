@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'package:arch/templates/state/bloc_template.dart';
-import 'package:arch/templates/state/cubit_template.dart';
-import 'package:arch/templates/state/hydrated_bloc_template.dart';
-import 'package:arch/templates/state/hydrated_cubit_template.dart';
+
+import 'package:arch_cli/templates/state/bloc_template.dart';
+import 'package:arch_cli/templates/state/cubit_template.dart';
+import 'package:arch_cli/templates/state/hydrated_bloc_template.dart';
+import 'package:arch_cli/templates/state/hydrated_cubit_template.dart';
 import 'package:interact/interact.dart' show Input, Select, ValidationError;
-import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
+import 'package:yaml/yaml.dart';
 
 class StateController {
   static final List<String> _stateManagementOptions = [

@@ -1,15 +1,16 @@
 import 'dart:io';
-import 'package:arch/arch.dart';
-import 'package:arch/model/project_model.dart';
-import 'package:arch/utils/create_assets.dart';
-import 'package:arch/utils/dart_fix.dart';
-import 'package:arch/utils/lib_folder_templating.dart';
-import 'package:arch/utils/localization.dart';
+
+import 'package:arch_cli/arch.dart';
+import 'package:arch_cli/model/project_model.dart';
+import 'package:arch_cli/utils/create_assets.dart';
+import 'package:arch_cli/utils/dart_fix.dart';
+import 'package:arch_cli/utils/lib_folder_templating.dart';
+import 'package:arch_cli/utils/localization.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;
-import 'package:process_run/stdio.dart';
 import 'package:path/path.dart' as p;
+import 'package:process_run/stdio.dart';
 
 class CreateProjectController {
   List<String> flavors = ['development, production, staging'];

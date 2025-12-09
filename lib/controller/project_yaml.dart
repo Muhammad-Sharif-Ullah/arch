@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:arch/model/project_model.dart';
-import 'package:arch/utils/read_file.dart';
-import 'package:arch/utils/write_file.dart';
+import 'package:arch_cli/model/project_model.dart';
+import 'package:arch_cli/utils/write_file.dart';
 import 'package:json2yaml/json2yaml.dart';
-import 'package:yaml/yaml.dart';
 
 /// This `ProjectToml` class is used to read and write the `project.toml` file.
 /// take the `ProjectModel` as a parameter and write the content to the `project.toml` file.

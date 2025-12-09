@@ -1,4 +1,4 @@
-name: arch
+name: arch_cli
 description: A sample command-line application.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
@@ -7,7 +7,7 @@ environment:
   sdk: ^3.4.3
 
 executables:
-  arch: main
+  arch_cli: main
 
 # Add regular dependencies here.
 dependencies:

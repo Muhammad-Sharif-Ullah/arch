@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:arch/utils/color_message.dart';
+import 'package:arch_cli/utils/color_message.dart';
 import 'package:cli_spin/cli_spin.dart';
 
 Future<void> runCommand(String command, List<String> arguments) async {

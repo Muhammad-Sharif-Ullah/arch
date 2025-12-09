@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:arch/utils/command.dart';
-import 'package:arch/utils/dart_fix.dart';
+
+import 'package:arch_cli/utils/command.dart';
+import 'package:arch_cli/utils/dart_fix.dart';
 import 'package:change_case/change_case.dart';
 import 'package:interact/interact.dart' show Input, ValidationError;
 import 'package:path/path.dart' as p;

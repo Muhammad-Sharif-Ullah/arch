@@ -1,4 +1,4 @@
-import 'package:arch/model/project_model.dart';
+import 'package:arch_cli/model/project_model.dart';
 
 abstract class BaseController {
   final ProjectModel project;

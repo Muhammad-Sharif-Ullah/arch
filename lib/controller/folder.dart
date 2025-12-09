@@ -1,6 +1,5 @@
-import 'package:arch/arch.dart';
-import 'package:arch/model/project_model.dart';
-import 'package:arch/utils/generate_file_and_folder.dart';
+import 'package:arch_cli/model/project_model.dart';
+import 'package:arch_cli/utils/generate_file_and_folder.dart';
 import 'package:jinja/jinja.dart';
 import 'package:jinja/loaders.dart';
 

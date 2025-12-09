@@ -1,4 +1,4 @@
-import 'package:arch/arch.dart';
+import 'package:arch_cli/arch.dart';
 import 'package:mustache_template/mustache.dart';
 
 class LogoGeneratorController {

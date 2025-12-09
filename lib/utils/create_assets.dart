@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:arch/arch.dart';
+import 'package:arch_cli/arch.dart';
 import 'package:json2yaml/json2yaml.dart';
 import 'package:yaml/yaml.dart';
 

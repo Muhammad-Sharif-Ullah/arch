@@ -1,5 +1,5 @@
-import 'package:arch/arch.dart';
-import 'package:arch/generator/generator.dart';
+import 'package:arch_cli/arch.dart';
+import 'package:arch_cli/generator/generator.dart';
 
 class BuildGenerator extends BaseGenerator {
   final BuildController buildController;
