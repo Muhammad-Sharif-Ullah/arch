@@ -223,7 +223,8 @@ class CreateProjectController {
         'flutter_svg',
         'path_provider',
         'flutter_gen',
-        'flutter_launcher_icons'
+        'flutter_launcher_icons',
+        'font_awesome_flutter'
       ]);
 
       await runCommand('flutter', [
@@ -260,7 +261,11 @@ class CreateProjectController {
         templatesRoot: templatesRoot,
         srcFolder: 'lib',
         destRoot: destRoot,
-        globals: {'project_name': projectName, 'year': DateTime.now().year},
+        globals: {
+          'project_name': projectName,
+          'year': DateTime.now().year,
+          'ownner_url': projectModel.authorName
+        },
       );
 
       await _fixFeatureStructure(
@@ -270,7 +275,11 @@ class CreateProjectController {
         templatesRoot: templatesRoot,
         srcFolder: '.vscode',
         destRoot: '.',
-        globals: {'project_name': projectName, 'year': DateTime.now().year},
+        globals: {
+          'project_name': projectName,
+          'year': DateTime.now().year,
+          'ownner_url': projectModel.authorName
+        },
       );
 
       LocalizationUtil.readProjectYAML(projectName);

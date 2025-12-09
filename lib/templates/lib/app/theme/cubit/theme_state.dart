@@ -51,4 +51,16 @@ class ThemeState extends Equatable {
 
   @override
   List<Object?> get props => [scheme, mode];
+
+  String get getCurrentThemeAsName {
+    switch (mode) {
+      case ThemeMode.system:
+        return "Systme Theme";
+
+      case ThemeMode.light:
+        return "Light Theme";
+      default:
+        return "Dark Theme";
+    }
+  }
 }

@@ -9,7 +9,7 @@ class ModelController {
   Future<void> call({required String moduleName}) async {
     final featurePath = p.join('lib', 'feature', moduleName);
     if (!Directory(featurePath).existsSync()) {
-      print('⚠️  Module "$moduleName" not found under lib/feature/');
+      print('⚠️  Module "$moduleName" not found under lib/features/');
       return;
     }
     final modelName = Input(
@@ -33,7 +33,7 @@ class ModelController {
     final jsonData = jsonDecode(jsonContent);
 
     // all models go directly into the model folder
-    final outputDir = Directory('lib/feature/$moduleName/data/model');
+    final outputDir = Directory('lib/features/$moduleName/data/model');
     await outputDir.create(recursive: true);
 
     final rootClassBase = _toPascal(modelName);

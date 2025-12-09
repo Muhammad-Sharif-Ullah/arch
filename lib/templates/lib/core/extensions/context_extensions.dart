@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 extension MediaQueryExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);
 
+  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+
   /// Returns the height of the device
   double get height => MediaQuery.sizeOf(this).height;
 
@@ -35,6 +37,38 @@ extension MediaQueryExtension on BuildContext {
 
   double dynamicWidth(double val) => width * val;
   double dynamicHeight(double val) => height * val;
+
+  // page Builder Grid Type content List
+  int get girdChildCount => (width < 450)
+      ? 2
+      : (width > 450 && width < 700)
+          ? 5
+          : 4;
+  // ONLY -> soma ase Grid Type but custom count for Offer List
+  int get offerListChildCount => (width < 450)
+      ? 2
+      : (width > 450 && width < 700)
+          ? 4
+          : 3;
+  double get contentSize => (width < 450)
+      ? 320.0
+      : (width > 450 && width < 700)
+          ? 450.0
+          : 450.0;
+  // End -> page Builder Grid Type content List
+
+  // Horizontal product list in page builder
+  double get horizontalProductListChildWidth => (width < 450)
+      ? .46
+      : (width > 450 && width < 700)
+          ? .23
+          : .23;
+  double get horizontalProductListContentSize => (width < 450)
+      ? 315.5
+      : (width > 450 && width < 700)
+          ? 465.5
+          : 465.5;
+  // END - Horizontal product list in page builder
 }
 
 extension PaddingExtension on BuildContext {
@@ -49,24 +83,29 @@ extension PaddingExtension on BuildContext {
   EdgeInsets get paddingAllHigh => EdgeInsets.all(highValue);
 
   /// Adds 1% padding horizontally.
-  EdgeInsets get paddingHorizontalLow => EdgeInsets.symmetric(horizontal: lowValue);
+  EdgeInsets get paddingHorizontalLow =>
+      EdgeInsets.symmetric(horizontal: lowValue);
 
   /// Adds 2% padding horizontally.
   /// Use this when you want to add padding horizontally.
-  EdgeInsets get paddingHorizontalDefault => EdgeInsets.symmetric(horizontal: defaultValue);
+  EdgeInsets get paddingHorizontalDefault =>
+      EdgeInsets.symmetric(horizontal: defaultValue);
 
   /// Adds 5% padding horizontally.
-  EdgeInsets get paddingHorizontalHigh => EdgeInsets.symmetric(horizontal: highValue);
+  EdgeInsets get paddingHorizontalHigh =>
+      EdgeInsets.symmetric(horizontal: highValue);
 
   /// Adds 1% padding vertically.
   EdgeInsets get paddingVerticalLow => EdgeInsets.symmetric(vertical: lowValue);
 
   /// Adds 2% padding vertically.
   /// Use this when you want to add padding vertically.
-  EdgeInsets get paddingVerticalDefault => EdgeInsets.symmetric(vertical: defaultValue);
+  EdgeInsets get paddingVerticalDefault =>
+      EdgeInsets.symmetric(vertical: defaultValue);
 
   /// Adds 5% padding vertically.
-  EdgeInsets get paddingVerticalHigh => EdgeInsets.symmetric(vertical: highValue);
+  EdgeInsets get paddingVerticalHigh =>
+      EdgeInsets.symmetric(vertical: highValue);
 
   /// Adds 1% padding from right.
   EdgeInsets get paddingRightLow => EdgeInsets.only(right: lowValue);

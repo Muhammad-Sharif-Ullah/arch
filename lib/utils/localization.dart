@@ -38,7 +38,13 @@ class LocalizationUtil {
       final flutterSection = {
         'generate': true,
         'uses-material-design': true,
-        'assets': ['assets/fonts/', 'assets/icons/', 'assets/images/'],
+        'assets': [
+          'assets/fonts/',
+          'assets/icons/',
+          'assets/images/',
+          'assets/data/',
+          'environment/'
+        ],
       };
       editor.update(['flutter'], flutterSection);
 

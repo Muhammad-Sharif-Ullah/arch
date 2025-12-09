@@ -19,7 +19,7 @@ class StateController {
   Future<void> call({required String moduleName}) async {
     final featurePath = p.join('lib', 'feature', moduleName);
     if (!Directory(featurePath).existsSync()) {
-      print('⚠️  Module "$moduleName" not found under lib/feature/');
+      print('⚠️  Module "$moduleName" not found under lib/features/');
       return;
     }
 

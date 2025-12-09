@@ -1,5 +1,5 @@
 
- import 'package:{{project_name}}/feature/{{module_name}}/domain/repositories/{{module_name}}_repo.dart';
+ import 'package:{{project_name}}/features/{{module_name}}/domain/repositories/{{module_name}}_repo.dart';
  
  class {{class_name}}RepositoryImpl extends  {{class_name}}Repository{
 

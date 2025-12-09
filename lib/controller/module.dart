@@ -129,7 +129,7 @@ class CreateModuleController {
     await ModuleTemplating.renderTemplatesFolder(
       templatesRoot: templatesRoot,
       srcFolder: 'modules/',
-      destRoot: './lib/feature/',
+      destRoot: './lib/features/',
       globals: {
         'module_name': moduleName,
         'page_name': pageName?.toPascalCase(),

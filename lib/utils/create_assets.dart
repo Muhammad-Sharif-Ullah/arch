@@ -14,26 +14,56 @@ class CreateAssets {
     print(
         "Creating assets in $projectDirectory, ${Directory.current.parent.path}");
 
-    // read file projectDirectroy/pubspec.yaml
     final yamlFile =
         '${Directory.current.parent.path}/$projectDirectory/pubspec.yaml';
-    final yaml = File(yamlFile).readAsStringSync();
 
+    final yaml = File(yamlFile).readAsStringSync();
     var doc = loadYaml(yaml);
-    // write the updated yaml back to the file
+
+    // Convert YAML -> JSON Map
     final jsonToMap = json.decode(json.encode(doc));
+
+    // Ensure flutter key exists
+    jsonToMap['flutter'] ??= {};
+
+    // Add assets
     jsonToMap['flutter']['assets'] = [
+      'assets/data/',
       'assets/images/',
       'assets/icons/',
       'assets/fonts/',
-      'environment/'
+      'environment/',
     ];
 
-    final updatedYaml = json2yaml(jsonToMap);
+    // Convert back to YAML
+    String updatedYaml = json2yaml(jsonToMap);
+
+    // ✅ Commented font block
+    const commentedFonts = '''
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+''';
+
+    // ✅ Append commented fonts after flutter section
+    if (!updatedYaml.contains('# fonts:')) {
+      updatedYaml = '$updatedYaml\n$commentedFonts';
+    }
+
+    // Write back to file
     File(yamlFile).writeAsStringSync(updatedYaml);
 
+    // ===== EXISTING COPY LOGIC =====
     final String archDirectory = '${Directory.current.parent.path}/arch/lib';
-    // copy the template/assets directory to the project directory
+
     final templateAssetsDirectory =
         Directory('$archDirectory/templates/assets/');
     if (templateAssetsDirectory.existsSync()) {
@@ -41,36 +71,34 @@ class CreateAssets {
         'cp',
         [
           '-rv',
-          '${(templateAssetsDirectory.path)}/.', // 👈 Copy contents only
-          './assets', // 👈 Ensure assets folder exists
+          '${(templateAssetsDirectory.path)}/.',
+          './assets',
         ],
       );
-    } else {
-      print(
-          'Template assets directory does not exist at ${templateAssetsDirectory.path}');
     }
+
     runCommand(
       'cp',
       [
-        Directory('$archDirectory/templates/flutter_launcher_icons.yaml')
-            .path, // 👈 Copy contents only
-        '.', // 👈 Ensure assets folder exists
+        Directory('$archDirectory/templates/flutter_launcher_icons.yaml').path,
+        '.',
       ],
     );
+
     runCommand(
       'cp',
       [
-        Directory('$archDirectory/templates/l10n.yaml')
-            .path, // 👈 Copy contents only
-        '.', // 👈 Ensure assets folder exists
+        Directory('$archDirectory/templates/l10n.yaml').path,
+        '.',
       ],
     );
+
     runCommand(
       'cp',
       [
         '-rv',
-        '${Directory('$archDirectory/templates/environment/').path}/.', // 👈 Copy contents only
-        './environment', // 👈 Ensure assets folder exists
+        '${Directory('$archDirectory/templates/environment/').path}/.',
+        './environment',
       ],
     );
   }

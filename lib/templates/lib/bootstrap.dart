@@ -5,7 +5,7 @@ import 'package:{{project_name}}/app/environment/app_environment.dart';
 import 'package:{{project_name}}/core/utils/device_info/device_info_utils.dart';
 import 'package:{{project_name}}/core/utils/logger/logger_utils.dart';
 import 'package:{{project_name}}/core/utils/package_info/package_info_utils.dart';
-import 'package:{{project_name}}/locator.dart';
+import 'package:{{project_name}}/core/di/locator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -38,7 +38,7 @@ Future<void> bootstrap({
           SystemUiMode.manual,
           overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top],
         ),
-        Locator.locateServices(environment: environment),
+        Locator.setup(environment: environment),
         PackageInfoUtils.init(),
         DeviceInfoUtils.init(),
       ]);

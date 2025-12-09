@@ -1,0 +1,31 @@
+{
+    "status": true,
+    "data": [
+        {   
+            "id": 1,
+            "title": "Explore Fashion Categories",
+            "subtitle": "Enjoy a hassle free shopping experience with secure payment options and quick delivery. Shop confidently.",
+            "image": "assets/images/shopping.png"
+        },
+        {            "id": 2,
+
+            "title": "Easy and Secure Shopping",
+            "subtitle": "Browse through our extensive collection of clothing, footwear, accessories & more. Find the perfect pieces.",
+            "image": "assets/images/sequre_payment.png"
+        },
+        {
+                        "id": 3,
+
+            "title": "Exclusive Offers and Discounts'",
+            "subtitle": "Stay ahead in fashion with MixCat. Get exclusive access to sales, discounts, and special offers.",
+            "image": "assets/images/offer.png"
+        },
+        {
+                        "id": 4,
+
+            "title": "Start Journey With MixCat",
+            "subtitle": "Discover the latest fashion trends, shop your favorite brands, and create your perfect style with MixCat!",
+            "image": "assets/images/delivery.png"
+        }
+    ]
+}

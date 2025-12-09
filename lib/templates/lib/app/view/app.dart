@@ -1,17 +1,27 @@
+import 'package:{{project_name}}/core/di/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:{{project_name}}/app/constants/string_constants.dart';
 import 'package:{{project_name}}/app/l10n/arb/app_localizations.dart';
 import 'package:{{project_name}}/app/router/app_router.dart';
 import 'package:{{project_name}}/app/theme/cubit/theme_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{project_name}}/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:{{project_name}}/core/utils/responsive/responsive.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(),
+    SizeConfig().init(context);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+        BlocProvider<OnboardingBloc>(
+          create: (_) => Locator.instance<OnboardingBloc>(),
+        ),
+      ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(

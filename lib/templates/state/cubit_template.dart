@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 class CubitTemplate {
-  /// featurePath: full path to 'lib/feature/module/presentation/cubit'
+  /// featurePath: full path to 'lib/features/module/presentation/cubit'
   static Future<void> create(String featurePath, String stateName) async {
     Directory(featurePath).createSync(recursive: true);
 

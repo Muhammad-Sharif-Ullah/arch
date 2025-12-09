@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 class BlocTemplate {
-  /// featurePath should be the full path to the folder (lib/feature/module/presentation/bloc)
+  /// featurePath should be the full path to the folder (lib/features/module/presentation/bloc)
   static Future<void> create(String featurePath, String stateName) async {
     // Ensure directory exists
     Directory(featurePath).createSync(recursive: true);

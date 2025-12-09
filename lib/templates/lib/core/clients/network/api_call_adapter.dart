@@ -17,16 +17,18 @@ class ResultCallAdapter<T>
       final baseResponse = await call();
 
       if (baseResponse.success) {
-        // if T is not Nullable<dynamic> then failure then
-        // Check if T is nullable and baseResponse.data is null
         if (baseResponse.data == null) {
           return Result.success(data: null as T);
         } else {
-          return Result.success(data: baseResponse.data as T);
+          // FIX: Pass the pagination data from BaseResponse to Result
+          return Result.success(
+            data: baseResponse.data as T,
+            pagination: baseResponse.pagination?.toJson(),
+          );
         }
       }
 
-      // Handle API-level failure (non-success response)
+      // Handle API-level failure
       return Result.failure(
         baseResponse.error ?? 'Unknown API error',
         baseResponse.statusCode,
@@ -35,7 +37,6 @@ class ResultCallAdapter<T>
     } on DioException catch (e) {
       return _mapDioExceptionToResult(e);
     } catch (e, st) {
-      // Catch-all for unexpected exceptions (bugs, parsing errors, etc.)
       return Result.failure('Unexpected error: $e', null, {
         'exception': e.toString(),
         'stack_trace': st.toString(),
@@ -90,8 +91,8 @@ class ResultCallAdapter<T>
       errorMessage = data['error'] is String
           ? data['error'] as String
           : data['message'] is String
-          ? data['message'] as String
-          : errorMessage;
+              ? data['message'] as String
+              : errorMessage;
     }
 
     return Result.failure(errorMessage, response?.statusCode, data);

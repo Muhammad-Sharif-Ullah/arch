@@ -18,42 +18,77 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       const OnboardingScreen();
 }
 
-// /// 🔹 Shell route for main layout (e.g. bottom nav)
-// @TypedShellRoute<MainShellRoute>(
-//   routes: [
-//     TypedGoRoute<HomeRoute>(path: '/home'),
-//     TypedGoRoute<CartRoute>(path: '/cart'),
-//     TypedGoRoute<ProfileRoute>(path: '/profile'),
-//   ],
-// )
-// class MainShellRoute extends ShellRouteData {
-//   const MainShellRoute();
+/// Shell route for main layout (e.g. bottom nav)
+/*
+/// ------------------------------------------------------
+/// MAIN SHELL (Bottom Navigation Layout)
+/// ------------------------------------------------------
+@TypedShellRoute<MainShellRoute>(
+  routes: [
+    TypedGoRoute<DashboardRoute>(
+      path: DashboardScreen.path,
+      name: DashboardScreen.name,
+    ),
+    TypedGoRoute<CategoriesRoute>(
+      path: CategoriesScreen.path,
+      name: CategoriesScreen.name,
+    ),
+    TypedGoRoute<CartRoute>(path: CartScreen.path, name: CartScreen.name),
+    TypedGoRoute<ProfileRoute>(
+      path: ProfileScreen.path,
+      name: ProfileScreen.name,
+      routes: [],
+    ),
+  ],
+)
+class MainShellRoute extends ShellRouteData {
+  const MainShellRoute();
 
-//   @override
-//   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
-//     return MainLayout(child: navigator);
-//   }
-// }
+  @override
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    return MainLayout(child: navigator);
+  }
+}
 
-// /// 🔹 Individual routes inside the shell
-// class HomeRoute extends GoRouteData {
-//   const HomeRoute();
+/// ------------------------------------------------------
+/// SHELL INNER ROUTES
+/// ------------------------------------------------------
 
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) => const HomePage();
-// }
+class DashboardRoute extends GoRouteData with $DashboardRoute {
+  const DashboardRoute();
 
-// class CartRoute extends GoRouteData {
-//   const CartRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return BlocProvider(
+      create: (context) => Locator.instance<HomeBuilderCubit>()
+        ..fetchInitialData(payload: HomePaginationPayload(page: 1, limit: 20)),
+      child: const DashboardScreen(),
+    );
+  }
+}
 
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) => const CartPage();
-// }
+class CategoriesRoute extends GoRouteData with $CategoriesRoute {
+  const CategoriesRoute();
 
-// class ProfileRoute extends GoRouteData {
-//   const ProfileRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const CategoriesScreen();
+}
 
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) =>
-//       const ProfilePage();
-// }
+class CartRoute extends GoRouteData with $CartRoute {
+  const CartRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const CartScreen();
+}
+
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  const ProfileRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ProfileScreen();
+}
+
+
+*/
