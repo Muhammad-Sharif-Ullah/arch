@@ -100,8 +100,11 @@ class EntityModelController {
 
     await runCommand('dart', ['format', '.']);
     await DartFix.fixer();
-    await runCommand('dart',
-        ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
+    await runCommand('dart', [
+      'run',
+      'build_runner',
+      'build',
+    ]);
   }
 
   // ---------------- ANALYZE JSON ----------------

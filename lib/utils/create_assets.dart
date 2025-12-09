@@ -32,8 +32,7 @@ class CreateAssets {
     final updatedYaml = json2yaml(jsonToMap);
     File(yamlFile).writeAsStringSync(updatedYaml);
 
-    final String archDirectory =
-        '${Directory.current.parent.path}/code/arch/lib';
+    final String archDirectory = '${Directory.current.parent.path}/arch/lib';
     // copy the template/assets directory to the project directory
     final templateAssetsDirectory =
         Directory('$archDirectory/templates/assets/');
