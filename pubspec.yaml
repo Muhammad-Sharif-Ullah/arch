@@ -6,6 +6,9 @@ version: 1.0.0
 environment:
   sdk: ^3.4.3
 
+executables:
+  arch: main
+
 # Add regular dependencies here.
 dependencies:
   cli_spin: ^1.0.1
