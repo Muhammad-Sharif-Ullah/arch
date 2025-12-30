@@ -1,7 +1,7 @@
 // pagination.dart
 import 'package:json_annotation/json_annotation.dart';
 
-part '../../../../../lib/core/utils/paginaiton/pagination.g.dart';
+part 'pagination.g.dart';
 
 @JsonSerializable()
 class Pagination {

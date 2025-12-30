@@ -2,12 +2,11 @@ import 'package:arch_cli/arch.dart';
 import 'package:arch_cli/controller/model.dart';
 import 'package:arch_cli/controller/model_entity_generator.dart';
 import 'package:arch_cli/controller/module.dart';
-import 'package:arch_cli/controller/project_test.dart';
 import 'package:arch_cli/controller/state.dart';
 
 /// Controller
-final TestCreateProjectController createProjectController =
-    TestCreateProjectController();
+final CreateProjectController createProjectController =
+    CreateProjectController();
 final HelpController helpController = HelpController();
 final WelcomeBanner welcomeBanner = WelcomeBanner();
 final FlavorController flavorController = FlavorController();

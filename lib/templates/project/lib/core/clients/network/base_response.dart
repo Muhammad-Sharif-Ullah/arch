@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:{{project_name}}/core/utils/paginaiton/pagination.dart';
 
-part '../../../../../lib/core/clients/network/base_response.g.dart';
+part 'base_response.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true, explicitToJson: true)
 class BaseResponse<T> extends Equatable {

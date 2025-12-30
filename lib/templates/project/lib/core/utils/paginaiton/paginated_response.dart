@@ -2,7 +2,7 @@
 import 'package:{{project_name}}/core/utils/paginaiton/pagination.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part '../../../../../lib/core/utils/paginaiton/paginated_response.g.dart';
+part 'paginated_response.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true)
 class PaginatedResponse<T> {

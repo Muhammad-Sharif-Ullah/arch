@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(),
             Image.asset(
-              Assets.images.logoPng.path,
+              Assets.icons.logoPng.path,
               height: 200,
               width: 200,
             ).animate(

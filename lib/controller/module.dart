@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:arch_cli/utils/command.dart';
 import 'package:arch_cli/utils/dart_fix.dart';
 import 'package:arch_cli/utils/module_templating.dart';
+import 'package:arch_cli/utils/templates_manager.dart';
 import 'package:change_case/change_case.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
 import 'package:interact/interact.dart'
@@ -114,13 +116,7 @@ class CreateModuleController {
     final scriptDir = p.dirname(Platform.script.toFilePath());
     // Assuming templates are located at: <cli_package_root>/lib/templates
     // Go up until we find "lib/templates"
-    final possibleTemplatePath = p.normalize(
-      p.join(scriptDir, '..', 'lib', 'templates'),
-    );
-
-    final templatesRoot = Directory(possibleTemplatePath).existsSync()
-        ? possibleTemplatePath
-        : p.join(Directory.current.path, 'templates'); // fallback
+    final templatesRoot = await TemplatesManager.getTemplatesRoot();
 
     print('📂 Using templates from: $templatesRoot');
 
@@ -138,6 +134,8 @@ class CreateModuleController {
         'project_name': projectName,
       },
     );
+    await runCommand('dart',
+        ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
     DartFix.fixer();
 
     print('\n✅ Module "$moduleName" generated successfully!\n');

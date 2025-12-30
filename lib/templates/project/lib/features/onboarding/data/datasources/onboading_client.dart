@@ -6,7 +6,7 @@ import 'package:{{project_name}}/core/clients/network/endpoints.dart';
 import 'package:{{project_name}}/features/onboarding/data/models/onbading.dart';
 import 'package:retrofit/retrofit.dart';
 
-part '../../../../../../lib/features/onboarding/data/datasources/onboading_client.g.dart';
+part 'onboading_client.g.dart';
 
 @RestApi(callAdapter: ResultCallAdapter)
 abstract class OnboadingClient {

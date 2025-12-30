@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:{{project_name}}/features/onboarding/domain/entities/onboading.dart';
 
-part '../../../../../../lib/features/onboarding/data/models/onbading.g.dart';
+part 'onbading.g.dart';
 
 @JsonSerializable()
 class OnboadingModel extends OnboadingEntity {

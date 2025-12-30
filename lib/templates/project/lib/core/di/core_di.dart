@@ -5,6 +5,7 @@ import 'package:{{project_name}}/app/environment/app_environment.dart';
 import 'package:{{project_name}}/app/router/app_router.dart';
 import 'package:{{project_name}}/core/clients/network/endpoints.dart';
 import 'package:{{project_name}}/core/clients/network/network_client.dart';
+import 'package:{{project_name}}/core/clients/network/result_call_executor.dart';
 
 class CoreDi {
   static void register({
@@ -40,6 +41,10 @@ class CoreDi {
       () =>
           NetworkClient(dio: instance.get<Dio>(), baseUrl: environment.baseUrl),
     );
+
+    // Result adapter (Retrofit replacement)
+    instance.registerLazySingleton(() => const ResultCallExecutor());
+
     instance.registerLazySingleton(() => AppRouter());
     // Future: Add SharedPreferences, SecureStorage, etc. here
   }
