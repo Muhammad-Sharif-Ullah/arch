@@ -1,0 +1,42 @@
+dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
+
+flutter_launcher_icons:
+  {% if isAndroid %}
+  android: "ic_launcher"
+  generate_android: true
+  {% endif %}
+  {% if isIOS %}
+  ios: true
+  remove_alpha_ios: true
+  generate_ios: true
+  {% endif %}
+  image_path: "assets/icons/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  {% if isWeb %}
+  web:
+    generate: true
+    image_path: "assets/icons/logo.png"
+    background_color: "#002252"
+    theme_color: "#ffffff"
+  {% endif %}
+  {% if isLinux %}
+  linux:
+    generate: true
+    image_path: "assets/icons/logo.png"
+  {% endif %}
+  {% if isWindows %}
+  windows:
+    generate: true
+    image_path: "assets/icons/logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  {% endif %}
+  {% if isMacOS %}
+  macos:
+    generate: true
+    image_path: "assets/icons/logo.png"
+  {% endif %}
+#
+#
+# command
+# dart run flutter_launcher_icons -f flutter_launcher_icons.yaml

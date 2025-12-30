@@ -46,7 +46,8 @@ class LibFolderTemplating {
       if (entity is! File) continue;
 
       final relativePath = p.relative(entity.path, from: templatesPath);
-      final destPath = p.join(destRoot, relativePath);
+      final relativePathFromSrc = p.relative(entity.path, from: templateDir.path);
+      final destPath = p.join(destRoot, relativePathFromSrc);
 
       // Ensure destination directory exists
       Directory(p.dirname(destPath)).createSync(recursive: true);
@@ -83,6 +84,38 @@ class LibFolderTemplating {
         await entity.copy(destPath);
         print('Copied (binary) -> $relativePath -> $destPath');
       }
+    }
+  }
+  static Future<void> renderFile({
+    required String templatePath,
+    required String destPath,
+    Map<String, Object?> globals = const {},
+  }) async {
+    final file = File(templatePath);
+    if (!file.existsSync()) {
+      throw Exception('Template file not found: $templatePath');
+    }
+    
+    // Create environment with loader at the file's parent directory
+    final env = Environment(
+      loader: FileSystemLoader(paths: [p.dirname(templatePath)]),
+      globals: globals,
+      autoReload: true,
+    );
+
+    try {
+      final relativePath = p.basename(templatePath);
+      final template = env.getTemplate(relativePath);
+      final rendered = template.render(globals);
+      await File(destPath).writeAsString(rendered);
+      print('Rendered Single File -> $relativePath -> $destPath');
+    } catch (e) {
+      print('Failed to render file $templatePath: $e');
+      // Fallback
+      final content = await file.readAsString();
+      final template = env.fromString(content);
+      final rendered = template.render(globals);
+      await File(destPath).writeAsString(rendered);
     }
   }
 }

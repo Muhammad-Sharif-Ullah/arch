@@ -11,6 +11,8 @@ import 'package:interact/interact.dart'
     show Input, MultiSelect, Select, ValidationError;
 import 'package:path/path.dart' as p;
 import 'package:process_run/stdio.dart';
+import 'package:arch_cli/utils/project_logo_handler.dart';
+import 'package:arch_cli/utils/templates_manager.dart';
 
 class CreateProjectController {
   List<String> flavors = ['development, production, staging'];
@@ -42,6 +44,8 @@ class CreateProjectController {
 
   Future<void> call() async {
     // --- Collect Inputs ---
+
+    /// Project Name Input
     final String projectName = Input(
       prompt: 'Enter the project name (snake case) ',
       defaultValue: 'my_project',
@@ -57,6 +61,7 @@ class CreateProjectController {
       },
     ).interact();
 
+    /// Project Description Input
     final String projectDescription = Input(
       prompt: 'Enter the project description ',
       defaultValue: 'My awesome project',
@@ -64,18 +69,19 @@ class CreateProjectController {
           x.isEmpty ? throw ValidationError('Description required') : true,
     ).interact();
 
+    /// Author Name Input
     final String authorName = Input(
       prompt: 'Enter the owner name ',
       defaultValue: 'https://www.owner.com',
       validator: (String x) => true,
     ).interact();
 
+    /// Flavor Selection
     final selectionOfFlavor = Select(
       prompt: 'Select Project Flavors?',
       options: flavorOptions,
       initialIndex: 0,
     ).interact();
-
     if (selectionOfFlavor == 0) {
       flavors = ['dev', 'prod', 'stag'];
     } else {
@@ -169,7 +175,7 @@ class CreateProjectController {
       apiClient: selectedApiClient,
     );
 
-    final String projectDirectory = '../${projectModel.projectName}';
+    final String projectDirectory = './${projectModel.projectName}';
 
     try {
       // --- Flutter Project Creation ---
@@ -242,7 +248,8 @@ class CreateProjectController {
       ]);
 
       await ProjectYaml().writeProjectConfig(project: projectModel);
-      CreateAssets.createAssets(projectDirectory: projectModel.projectName);
+      await CreateAssets.createAssets(
+          projectDirectory: projectModel.projectName);
 
       await runCommand(
           'flutter', ['pub', 'global', 'activate', 'flutter_launcher_icons']);
@@ -254,13 +261,12 @@ class CreateProjectController {
       ]);
 
       // --- Render Templates ---
-      final templatesRoot = p.normalize(
-          p.join(Directory.current.parent.path, 'arch/lib/templates'));
+      final templatesRoot = await TemplatesManager.getTemplatesRoot();
       final destRoot = p.join(Directory.current.path);
 
       await LibFolderTemplating.renderTemplatesFolder(
         templatesRoot: templatesRoot,
-        srcFolder: 'lib',
+        srcFolder: 'project',
         destRoot: destRoot,
         globals: {
           'project_name': projectName,
@@ -269,19 +275,10 @@ class CreateProjectController {
         },
       );
 
+      await ProjectLogoHandler.handleProjectLogo(projectModel);
+
       await _fixFeatureStructure(
           Directory.current.path); // 👈 Auto-remove modules
-
-      await LibFolderTemplating.renderTemplatesFolder(
-        templatesRoot: templatesRoot,
-        srcFolder: '.vscode',
-        destRoot: '.',
-        globals: {
-          'project_name': projectName,
-          'year': DateTime.now().year,
-          'ownner_url': projectModel.authorName
-        },
-      );
 
       LocalizationUtil.readProjectYAML(projectName);
 
@@ -298,6 +295,8 @@ class CreateProjectController {
       DartFix.fixer();
     } catch (e) {
       print('❌ Error: $e');
+    } finally {
+      TemplatesManager.cleanup();
     }
   }
 

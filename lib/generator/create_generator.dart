@@ -1,12 +1,12 @@
 import 'package:arch_cli/controller/model.dart';
 import 'package:arch_cli/controller/model_entity_generator.dart';
 import 'package:arch_cli/controller/module.dart';
-import 'package:arch_cli/controller/project.dart';
+import 'package:arch_cli/controller/project_test.dart';
 import 'package:arch_cli/controller/state.dart';
 import 'package:arch_cli/generator/generator.dart';
 
 class CreateGenerator extends BaseGenerator {
-  final CreateProjectController createProjectController;
+  final TestCreateProjectController createProjectController;
   final CreateModuleController createModuleController;
   final StateController stateController;
   final ModelController modelController;

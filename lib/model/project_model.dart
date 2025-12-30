@@ -11,6 +11,7 @@ class ProjectModel {
   final String iosPackageName;
   final List<String> platforms;
   final String license;
+  final String? logoPath;
   final String apiClient;
   final String navigation;
 
@@ -26,11 +27,12 @@ class ProjectModel {
     required this.license,
     required this.apiClient,
     required this.navigation,
+    this.logoPath,
   });
 
   @override
   String toString() {
-    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient, navigation: $navigation}';
+    return 'ProjectModel{projectName: $projectName, projectDescription: $projectDescription, authorName: $authorName, customFlavor: $customFlavor, designPattern: $designPattern, androidPackageName: $androidPackageName, iosPackageName: $iosPackageName, platforms: $platforms, license: $license, apiClient: $apiClient, navigation: $navigation, logoPath: $logoPath}';
   }
 
   Map<String, dynamic> toMap() {
@@ -46,6 +48,7 @@ class ProjectModel {
       'license': license,
       'apiClient': apiClient,
       'navigation': navigation,
+      'logoPath': logoPath,
     };
   }
 
@@ -62,6 +65,7 @@ class ProjectModel {
       license: map['license'] as String,
       apiClient: map['apiClient'] as String,
       navigation: map['navigation'] as String,
+      logoPath: map['logoPath'] != null ? map['logoPath'] as String : null,
     );
   }
 

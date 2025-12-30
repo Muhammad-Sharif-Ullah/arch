@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:arch_cli/utils/templates_manager.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
@@ -53,6 +54,9 @@ class LocalizationUtil {
       print('pubspec.yaml updated successfully 🎉');
     } catch (e) {
       print('Failed to read/update YAML: $e');
+    } finally {
+      // Any cleanup if necessary
+      TemplatesManager.cleanup();
     }
   }
 }

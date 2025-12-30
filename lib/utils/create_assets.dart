@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:arch_cli/arch.dart';
+import 'package:arch_cli/utils/templates_manager.dart';
 import 'package:json2yaml/json2yaml.dart';
 import 'package:yaml/yaml.dart';
 
@@ -10,7 +11,7 @@ class CreateAssets {
 
   /// This function is intentionally left empty.
   /// It serves as a placeholder for future asset creation logic.
-  static void createAssets({required final String projectDirectory}) {
+  static Future<void> createAssets({required final String projectDirectory}) async {
     print(
         "Creating assets in $projectDirectory, ${Directory.current.parent.path}");
 
@@ -51,7 +52,7 @@ class CreateAssets {
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-''';
+  # ''';
 
     // ✅ Append commented fonts after flutter section
     if (!updatedYaml.contains('# fonts:')) {
@@ -61,45 +62,6 @@ class CreateAssets {
     // Write back to file
     File(yamlFile).writeAsStringSync(updatedYaml);
 
-    // ===== EXISTING COPY LOGIC =====
-    final String archDirectory = '${Directory.current.parent.path}/arch/lib';
-
-    final templateAssetsDirectory =
-        Directory('$archDirectory/templates/assets/');
-    if (templateAssetsDirectory.existsSync()) {
-      runCommand(
-        'cp',
-        [
-          '-rv',
-          '${(templateAssetsDirectory.path)}/.',
-          './assets',
-        ],
-      );
-    }
-
-    runCommand(
-      'cp',
-      [
-        Directory('$archDirectory/templates/flutter_launcher_icons.yaml').path,
-        '.',
-      ],
-    );
-
-    runCommand(
-      'cp',
-      [
-        Directory('$archDirectory/templates/l10n.yaml').path,
-        '.',
-      ],
-    );
-
-    runCommand(
-      'cp',
-      [
-        '-rv',
-        '${Directory('$archDirectory/templates/environment/').path}/.',
-        './environment',
-      ],
-    );
+     // Asset folder collection and copy logic is now handled by LibFolderTemplating in Project Controller
   }
 }
