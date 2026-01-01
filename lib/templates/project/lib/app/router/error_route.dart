@@ -16,7 +16,7 @@ class PageNotFoundScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                Assets.icons.logoPng.path,
+                Assets.icons.logo.path,
                 width: 200,
                 height: 200,
                 fit: BoxFit.cover,
