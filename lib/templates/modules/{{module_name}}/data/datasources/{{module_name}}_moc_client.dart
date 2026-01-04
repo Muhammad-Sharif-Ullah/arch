@@ -7,7 +7,7 @@ import 'package:{{project_name}}/features/{{module_name}}/data/models/{{module_n
 
 class {{class_name}}MockClient {
   static const _mockPath = 'assets/data/{{module_name}}.json';
-  Future<Result<{{class_name}}Model>> login({required {{class_name}}Payload payload}) async {
+  Future<Result<{{class_name}}Model>> {{module_name}}({required {{class_name}}Payload payload}) async {
     try {
       // Simulate network delay
       await Future.delayed(const Duration(milliseconds: 500));

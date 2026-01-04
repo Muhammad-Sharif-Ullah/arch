@@ -1,3 +1,14 @@
+// Do not remove this type of comment
+/*
+  /// ---------------------------
+  /// Auto generated file
+  /// Do not edit manually.
+  /// Run `flutter pub run build_runner build --delete-conflicting-outputs`
+  /// to regenerate this file.
+  /// ---------------------------
+*/
+
+
 import 'package:get_it/get_it.dart';
 import 'package:{{project_name}}/app/environment/app_environment.dart';
 import 'package:{{project_name}}/features/{{module_name}}/data/datasources/{{module_name}}_moc_client.dart';
@@ -42,9 +53,5 @@ class {{class_name}}Di {
     // State management
     // ---------------------------
 
-   
-    // instance.registerLazySingleton<AuthenticationBloc>(
-    //   () => AuthenticationBloc(),
-    // );
   }
 }

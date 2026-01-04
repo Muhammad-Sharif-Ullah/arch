@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:arch_cli/utils/command.dart';
 import 'package:arch_cli/utils/dart_fix.dart';
 import 'package:arch_cli/utils/module_templating.dart';
+import 'package:arch_cli/utils/state_manage_templating.dart';
 import 'package:arch_cli/utils/templates_manager.dart';
 import 'package:change_case/change_case.dart';
 import 'package:dart_tabulate/dart_tabulate.dart';
@@ -34,6 +35,32 @@ class CreateModuleController {
       projectName: projectName,
       templatesRoot: templatesRoot,
     );
+
+    if (input.stateManagement != 'None') {
+      final sm = input.stateManagement;
+
+      if (sm == 'HydratedBloc') {
+        await StateManageTemplating.addHydratedBlocToLocator(
+          input.moduleName,
+          projectName,
+        );
+      } else if (sm == 'HydratedCubit') {
+        await StateManageTemplating.addHydratedCubitToLocator(
+          input.moduleName,
+          projectName,
+        );
+      } else if (sm == 'BloC') {
+        await StateManageTemplating.addBlocToLocator(
+          input.moduleName,
+          projectName,
+        );
+      } else if (sm == 'Cubit') {
+        await StateManageTemplating.addCubitToLocator(
+          input.moduleName,
+          projectName,
+        );
+      }
+    }
 
     await _updateRoutes(input, projectName);
     await _updateBarrel(input, projectName);

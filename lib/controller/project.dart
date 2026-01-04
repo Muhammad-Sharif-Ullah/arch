@@ -307,7 +307,8 @@ class CreateProjectController {
       'path_provider',
       'flutter_gen',
       'flutter_launcher_icons',
-      'font_awesome_flutter'
+      'font_awesome_flutter',
+      'freezed_annotation'
     ]);
 
     await runCommand('flutter', [
@@ -321,6 +322,7 @@ class CreateProjectController {
       'go_router_builder',
       'very_good_analysis',
       'build_verify',
+      'freezed',
     ]);
   }
 }
